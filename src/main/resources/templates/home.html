@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Портфель</h1>
+<div th:if="${ not#lists.isEmpty(summary)}">
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Сумма</th>
+            <th>Изменение</th>
+            <th>Изменение в %</th>
+            <th>% в портфеле</th>
+            <th>Инвестировано</th>
+            <th>Изменение от пополнения</th>
+        </tr>
+        <tr th:each="sum : ${summary}">
+            <td th:text="${sum.instrumentName}"></td>
+            <td th:text="${sum.sum}"></td>
+            <td th:text="${sum.change}"></td>
+            <td th:text="${sum.changeInPercents}"></td>
+            <td th:text="${sum.percentFromAll}"></td>
+            <td th:text="${sum.invested}"></td>
+            <td th:text="${sum.changeFromInvested}"></td>
+        </tr>
+    </table>
+</div>
+<form action="#" th:action="@{/AddSummary}" method="get">
+    <input type="submit" value="Добавить инструмент">
+</form>
+</body>
+</html>
