@@ -17,6 +17,12 @@
     </div>
 </div>
 </br>
+<script th:inline="javascript">
+    let error = [[${error}]];
+    if (error) {
+        alert(error);
+    }
+</script>
 <div th:if="${ not#lists.isEmpty(dividends)}">
     <table class="table">
         <tr>

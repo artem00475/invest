@@ -90,21 +90,27 @@ public class AccountingController {
 
     @PostMapping("/Accounting/Dividends")
     public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model) {
-        try {
-            Dividends dividends = new Dividends();
-            dividends.setCost(Float.parseFloat(dividendsRequest.getCost()));
-            dividends.setCount(Integer.parseInt(dividendsRequest.getCount()));
-            dividends.setSum(dividends.getCost()*0.87f*dividends.getCount());
-            dividends.setInstrumentName(instrumentName);
-            dividends.setTicker(dividendsRequest.getTicker());
-            dividends.setDate(new Date());
-            dividends.setTax(dividends.getSum()*0.13f);
-            dividendsService.addDividends(dividends);
-            System.out.println("Added");
-            accountService.addAccount(dividends);
-        } catch (NumberFormatException e) {
-            System.out.println("Error");
-        }
+        Account account = accountService.getAccount(instrumentName,dividendsRequest.getTicker());
+        if (account!=null) {
+            try {
+                if (account.getCount() == Integer.parseInt(dividendsRequest.getCount())) {
+                    Dividends dividends = new Dividends();
+                    dividends.setCost(Float.parseFloat(dividendsRequest.getCost()));
+                    dividends.setCount(Integer.parseInt(dividendsRequest.getCount()));
+                    dividends.setSum(dividends.getCost() * 0.87f * dividends.getCount());
+                    dividends.setInstrumentName(instrumentName);
+                    dividends.setTicker(dividendsRequest.getTicker());
+                    dividends.setDate(new Date());
+                    dividends.setTax(dividends.getSum() * 0.13f);
+                    dividendsService.addDividends(dividends);
+                    System.out.println("Added");
+                    accountService.addAccount(dividends);
+                }else model.addAttribute("error", "Некорректное число бумаг");
+            } catch (NumberFormatException e) {
+                System.out.println("Error");
+                model.addAttribute("error", "Некорректные значения");
+            }
+        }else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         return "dividends";
@@ -122,8 +128,6 @@ public class AccountingController {
     @PostMapping("/Accounting/Sell")
     public String addSells(@ModelAttribute SellRequest sellRequest, Model model) {
         Account account = accountService.getAccount(instrumentName,sellRequest.getTicker());
-        System.out.println(instrumentName + ' ' + sellRequest.getTicker());
-        System.out.println(account);
         if (account!=null) {
             try {
                 if (account.getCount() >= Integer.parseInt(sellRequest.getCount())) {
