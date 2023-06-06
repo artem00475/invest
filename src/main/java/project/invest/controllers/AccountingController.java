@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.invest.controllers.requests.BuyRequest;
+import project.invest.controllers.requests.DividendsRequest;
 import project.invest.jpa.entities.AccountBuy;
+import project.invest.jpa.entities.Dividends;
 import project.invest.services.AccountBuyService;
+import project.invest.services.AccountService;
+import project.invest.services.DividendsService;
 
 import java.util.Date;
 
@@ -19,15 +23,22 @@ public class AccountingController {
 
     @Autowired
     private final AccountBuyService accountBuyService;
+    @Autowired
+    private final AccountService accountService;
+    @Autowired
+    private final DividendsService dividendsService;
 
-    public AccountingController(AccountBuyService accountBuyService) {
+    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService) {
         this.accountBuyService = accountBuyService;
+        this.accountService = accountService;
+        this.dividendsService = dividendsService;
     }
 
     @GetMapping("/Accounting")
     public String getAccounting(@RequestParam String instrumentName, Model model) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         return "instrumentAccounting";
     }
 
@@ -52,11 +63,43 @@ public class AccountingController {
             accountBuy.setDate(new Date());
             accountBuyService.addBuy(accountBuy);
             System.out.println("Added");
+            accountService.addAccount(accountBuy);
         } catch (NumberFormatException e) {
             System.out.println("Error");
         }
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
         return "buy";
+    }
+
+    @GetMapping("/Accounting/Dividends")
+    public String getDividends(@RequestParam String instrumentName, Model model) {
+        this.instrumentName = instrumentName;
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("dividendsRequest", new DividendsRequest());
+        return "dividends";
+    }
+
+    @PostMapping("/Accounting/Dividends")
+    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model) {
+        try {
+            Dividends dividends = new Dividends();
+            dividends.setCost(Float.parseFloat(dividendsRequest.getCost()));
+            dividends.setCount(Integer.parseInt(dividendsRequest.getCount()));
+            dividends.setSum(dividends.getCost()*0.87f*dividends.getCount());
+            dividends.setInstrumentName(instrumentName);
+            dividends.setTicker(dividendsRequest.getTicker());
+            dividends.setDate(new Date());
+            dividends.setTax(dividends.getSum()*0.13f);
+            dividendsService.addDividends(dividends);
+            System.out.println("Added");
+            accountService.addAccount(dividends);
+        } catch (NumberFormatException e) {
+            System.out.println("Error");
+        }
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        return "dividends";
     }
 }

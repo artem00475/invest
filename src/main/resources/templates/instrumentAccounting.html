@@ -9,6 +9,38 @@
 <h1 th:text="${instrumentName}"></h1>
 <p>
     <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
+    <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
 </p>
+<div th:if="${ not#lists.isEmpty(accounts)}">
+    <table>
+        <tr>
+            <th>Тикер</th>
+            <th>Макс доля</th>
+            <th>Текущая цена</th>
+            <th>Количество</th>
+            <th>Текущая доля</th>
+            <th>Средняя цена</th>
+            <th>Изменение</th>
+            <th>Различие доли</th>
+            <th>Докупить</th>
+            <th>Изменение в %</th>
+            <th>Дивиденды</th>
+        </tr>
+        <tr th:each="account : ${accounts}">
+            <td th:text="${account.ticker}"></td>
+            <td th:text="${account.maxShare}"></td>
+            <td th:text="${account.currentCost}"></td>
+            <td th:text="${account.count}"></td>
+            <td th:text="${account.currentShare}"></td>
+            <td th:text="${account.averageCost}"></td>
+            <td th:text="${account.change}"></td>
+            <td th:text="${account.shareDifference}"></td>
+            <td th:text="${account.toBuy}"></td>
+            <td th:text="${account.changeInPercents}"></td>
+            <td th:text="${account.dividends}"></td>
+        </tr>
+    </table>
+</div>
+<div th:unless="${ not#lists.isEmpty(accounts)}">Пока здесь ничего нет</div>
 </body>
 </html>

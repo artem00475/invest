@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${instrumentName}"></title>
+</head>
+<body>
+<a href="/">Портфель</a>
+<h1 th:text="'Дивиденды ' + ${instrumentName}"></h1>
+<div th:if="${ not#lists.isEmpty(dividends)}">
+    <table>
+        <tr>
+            <th>Дата</th>
+            <th>Тикер</th>
+            <th>Цена</th>
+            <th>Количество</th>
+            <th>Сумма</th>
+            <th>Налог</th>
+        </tr>
+        <tr th:each="dividend : ${dividends}">
+            <td th:text="${dividend.date}"></td>
+            <td th:text="${dividend.ticker}"></td>
+            <td th:text="${dividend.cost}"></td>
+            <td th:text="${dividend.count}"></td>
+            <td th:text="${dividend.sum}"></td>
+            <td th:text="${dividend.tax}"></td>
+        </tr>
+    </table>
+</div>
+<div th:unless="${ not#lists.isEmpty(dividends)}">Пока здесь ничего нет</div>
+<form action="#" th:action="@{/Accounting/Dividends}" th:object="${dividendsRequest}" method="post">
+    <label>
+        Тикер
+        <input type="text" th:field="*{ticker}">
+    </label></br>
+    <label>
+        Цена
+        <input type="text" th:field="*{cost}">
+    </label></br>
+    <label>
+        Количество
+        <input type="text" th:field="*{count}">
+    </label></br>
+    <input type="submit" value="Добавить"/>
+</form>
+</br>
+<a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}">Назад</a>
+</body>
+</html>
