@@ -3,10 +3,7 @@ package project.invest.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.invest.jpa.entities.Account;
-import project.invest.jpa.entities.AccountBuy;
-import project.invest.jpa.entities.AccountSell;
-import project.invest.jpa.entities.Dividends;
+import project.invest.jpa.entities.*;
 import project.invest.jpa.repositories.AccountRepository;
 
 import java.util.List;
@@ -17,8 +14,12 @@ public class AccountService {
     @Autowired
     private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    @Autowired
+    private final SummaryService summaryService;
+
+    public AccountService(AccountRepository accountRepository, SummaryService summaryService) {
         this.accountRepository = accountRepository;
+        this.summaryService = summaryService;
     }
 
     public void addAccount(AccountBuy accountBuy) {
@@ -35,6 +36,7 @@ public class AccountService {
             account.setCount(account.getCount()+accountBuy.getCount());
             accountRepository.save(account);
         }
+        updateSummary(accountBuy.getInstrumentName());
     }
 
     public void addAccount(Dividends dividends) {
@@ -49,6 +51,7 @@ public class AccountService {
             account.setDividends(account.getDividends()+dividends.getSum());
             accountRepository.save(account);
         }
+        updateSummary(dividends.getInstrumentName());
     }
     @Transactional
     public void addAccount(AccountSell accountSell) {
@@ -61,10 +64,25 @@ public class AccountService {
                 account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
                 accountRepository.save(account);
             }
+            updateSummary(accountSell.getInstrumentName());
         }
     }
 
     public List<Account> getAccounts(String instrumentName) {return accountRepository.findAllByInstrumentName(instrumentName);}
 
     public Account getAccount(String name, String ticker) {return accountRepository.findByInstrumentNameAndTicker(name, ticker);}
+
+    public void updateSummary(String instrumentName) {
+        SummaryEntity summaryEntity = summaryService.getSummary(instrumentName);
+        List<Account> accounts = accountRepository.findAllByInstrumentName(instrumentName);
+        float sum = 0;
+        float change = 0;
+        for (Account account : accounts) {
+            sum += account.getCount()*account.getCurrentCost();
+            change += account.getChange();
+        }
+        summaryEntity.setSum(sum);
+        summaryEntity.setChange(change);
+        summaryService.addToSummery(summaryEntity);
+    }
 }

@@ -19,8 +19,6 @@ import project.invest.services.AccountService;
 import project.invest.services.DividendsService;
 import project.invest.services.SellsService;
 
-import java.util.Date;
-
 @Controller
 public class AccountingController {
     private String instrumentName;
@@ -64,10 +62,10 @@ public class AccountingController {
             AccountBuy accountBuy = new AccountBuy();
             accountBuy.setCost(Float.parseFloat(buyRequest.getCost()));
             accountBuy.setCount(Integer.parseInt(buyRequest.getCount()));
-            accountBuy.setSum(accountBuy.getCost()*accountBuy.getCount());
+            accountBuy.setSum(accountBuy.getCost() * accountBuy.getCount());
             accountBuy.setInstrumentName(instrumentName);
             accountBuy.setTicker(buyRequest.getTicker());
-            accountBuy.setDate(new Date());
+            accountBuy.setDate(buyRequest.getDate());
             accountBuyService.addBuy(accountBuy);
             System.out.println("Added");
             accountService.addAccount(accountBuy);
@@ -90,8 +88,8 @@ public class AccountingController {
 
     @PostMapping("/Accounting/Dividends")
     public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model) {
-        Account account = accountService.getAccount(instrumentName,dividendsRequest.getTicker());
-        if (account!=null) {
+        Account account = accountService.getAccount(instrumentName, dividendsRequest.getTicker());
+        if (account != null) {
             try {
                 if (account.getCount() == Integer.parseInt(dividendsRequest.getCount())) {
                     Dividends dividends = new Dividends();
@@ -100,7 +98,7 @@ public class AccountingController {
                     dividends.setSum(dividends.getCost() * 0.87f * dividends.getCount());
                     dividends.setInstrumentName(instrumentName);
                     dividends.setTicker(dividendsRequest.getTicker());
-                    dividends.setDate(new Date());
+                    dividends.setDate(dividendsRequest.getDate());
                     dividends.setTax(dividends.getSum() * 0.13f);
                     dividendsService.addDividends(dividends);
                     System.out.println("Added");
@@ -110,7 +108,7 @@ public class AccountingController {
                 System.out.println("Error");
                 model.addAttribute("error", "Некорректные значения");
             }
-        }else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
+        } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         return "dividends";
@@ -127,8 +125,8 @@ public class AccountingController {
 
     @PostMapping("/Accounting/Sell")
     public String addSells(@ModelAttribute SellRequest sellRequest, Model model) {
-        Account account = accountService.getAccount(instrumentName,sellRequest.getTicker());
-        if (account!=null) {
+        Account account = accountService.getAccount(instrumentName, sellRequest.getTicker());
+        if (account != null) {
             try {
                 if (account.getCount() >= Integer.parseInt(sellRequest.getCount())) {
                     AccountSell accountSell = new AccountSell();
@@ -139,7 +137,7 @@ public class AccountingController {
                     accountSell.setAverageSum(accountSell.getAverageCost() * accountSell.getCount());
                     accountSell.setInstrumentName(instrumentName);
                     accountSell.setTicker(sellRequest.getTicker());
-                    accountSell.setDate(new Date());
+                    accountSell.setDate(sellRequest.getDate());
                     accountSell.setChange(accountSell.getSum() - accountSell.getAverageSum());
                     sellsService.addSell(accountSell);
                     System.out.println("Added");

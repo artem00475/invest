@@ -22,4 +22,6 @@ public class SummaryService {
     public List<SummaryEntity> getAllByUserName(String user) {return summaryRepository.findAllByUserName(user);}
 
     public boolean checkInstrument(String instrumentName) {return summaryRepository.findByInstrumentName(instrumentName)==null;}
+
+    public SummaryEntity getSummary(String instrumentName) {return summaryRepository.findByInstrumentName(instrumentName);}
 }

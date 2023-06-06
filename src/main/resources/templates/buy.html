@@ -38,6 +38,10 @@
 <div th:unless="${ not#lists.isEmpty(buys)}">Пока здесь ничего нет</div>
 <form action="#" th:action="@{/Accounting/Buy}" th:object="${buyRequest}" method="post">
     <label>
+        Дата
+        <input type="date" th:field="*{date}">
+    </label></br>
+    <label>
         Тикер
         <input type="text" th:field="*{ticker}">
     </label></br>
