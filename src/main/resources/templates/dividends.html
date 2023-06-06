@@ -13,6 +13,7 @@
         <a class="active" href="/">Портфель</a>
         <a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}" th:text="${instrumentName}"></a>
         <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
+        <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
     </div>
 </div>
 </br>

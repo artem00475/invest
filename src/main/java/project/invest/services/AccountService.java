@@ -2,8 +2,10 @@ package project.invest.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.invest.jpa.entities.Account;
 import project.invest.jpa.entities.AccountBuy;
+import project.invest.jpa.entities.AccountSell;
 import project.invest.jpa.entities.Dividends;
 import project.invest.jpa.repositories.AccountRepository;
 
@@ -48,7 +50,21 @@ public class AccountService {
             accountRepository.save(account);
         }
     }
+    @Transactional
+    public void addAccount(AccountSell accountSell) {
+        Account account = accountRepository.findByInstrumentNameAndTicker(accountSell.getInstrumentName(), accountSell.getTicker());
+        if (account != null) {
+            account.setCount(account.getCount()-accountSell.getCount());
+            if (account.getCount() ==0) {
+                accountRepository.removeById(account.getId());
+            } else {
+                account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
+                accountRepository.save(account);
+            }
+        }
+    }
 
     public List<Account> getAccounts(String instrumentName) {return accountRepository.findAllByInstrumentName(instrumentName);}
 
+    public Account getAccount(String name, String ticker) {return accountRepository.findByInstrumentNameAndTicker(name, ticker);}
 }

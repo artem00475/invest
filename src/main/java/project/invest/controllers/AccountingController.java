@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.invest.controllers.requests.BuyRequest;
 import project.invest.controllers.requests.DividendsRequest;
+import project.invest.controllers.requests.SellRequest;
+import project.invest.jpa.entities.Account;
 import project.invest.jpa.entities.AccountBuy;
+import project.invest.jpa.entities.AccountSell;
 import project.invest.jpa.entities.Dividends;
 import project.invest.services.AccountBuyService;
 import project.invest.services.AccountService;
 import project.invest.services.DividendsService;
+import project.invest.services.SellsService;
 
 import java.util.Date;
 
@@ -27,11 +31,14 @@ public class AccountingController {
     private final AccountService accountService;
     @Autowired
     private final DividendsService dividendsService;
+    @Autowired
+    private final SellsService sellsService;
 
-    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService) {
+    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService) {
         this.accountBuyService = accountBuyService;
         this.accountService = accountService;
         this.dividendsService = dividendsService;
+        this.sellsService = sellsService;
     }
 
     @GetMapping("/Accounting")
@@ -101,5 +108,48 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         return "dividends";
+    }
+
+    @GetMapping("/Accounting/Sell")
+    public String getSells(@RequestParam String instrumentName, Model model) {
+        this.instrumentName = instrumentName;
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("sells", sellsService.getSells(instrumentName));
+        model.addAttribute("sellRequest", new SellRequest());
+        return "sell";
+    }
+
+    @PostMapping("/Accounting/Sell")
+    public String addSells(@ModelAttribute SellRequest sellRequest, Model model) {
+        Account account = accountService.getAccount(instrumentName,sellRequest.getTicker());
+        System.out.println(instrumentName + ' ' + sellRequest.getTicker());
+        System.out.println(account);
+        if (account!=null) {
+            try {
+                if (account.getCount() >= Integer.parseInt(sellRequest.getCount())) {
+                    AccountSell accountSell = new AccountSell();
+                    accountSell.setCost(Float.parseFloat(sellRequest.getCost()));
+                    accountSell.setCount(Integer.parseInt(sellRequest.getCount()));
+                    accountSell.setSum(accountSell.getCost() * accountSell.getCount());
+                    accountSell.setAverageCost(account != null ? account.getAverageCost() : 0f);
+                    accountSell.setAverageSum(accountSell.getAverageCost() * accountSell.getCount());
+                    accountSell.setInstrumentName(instrumentName);
+                    accountSell.setTicker(sellRequest.getTicker());
+                    accountSell.setDate(new Date());
+                    accountSell.setChange(accountSell.getSum() - accountSell.getAverageSum());
+                    sellsService.addSell(accountSell);
+                    System.out.println("Added");
+                    accountService.addAccount(accountSell);
+                } else {
+                    model.addAttribute("error", "Некорректное число бумаг");
+                }
+            } catch (NumberFormatException e) {
+                model.addAttribute("error", "Некорректные значения");
+                System.out.println("Error");
+            }
+        } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("sells", sellsService.getSells(instrumentName));
+        return "sell";
     }
 }
