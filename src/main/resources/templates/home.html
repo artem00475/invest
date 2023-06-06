@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Портфель</title>
+    <link rel="stylesheet" th:href="@{table.css}">
+    <link rel="stylesheet" th:href="@{header.css}">
 </head>
 <body>
-<h1>Портфель</h1>
+<div class="header">
+    <a href="#default" class="logo">Портфель</a>
+</div>
+</br>
 <div th:if="${ not#lists.isEmpty(summary)}">
-    <table>
+    <table class="table">
         <tr>
             <th>Название</th>
             <th>Сумма</th>

@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${instrumentName}"></title>
+    <link rel="stylesheet" th:href="@{table.css}">
+    <link rel="stylesheet" th:href="@{header.css}">
 </head>
 <body>
-<a href="/">Портфель</a>
-<h1 th:text="${instrumentName}"></h1>
-<p>
-    <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
-    <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
-</p>
+<div class="header">
+    <a href="#default" class="logo" th:text="${instrumentName}"></a>
+    <div class="header-right">
+        <a class="active" href="/">Портфель</a>
+        <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
+        <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
+    </div>
+</div>
+</br>
 <div th:if="${ not#lists.isEmpty(accounts)}">
-    <table>
+    <table class="table">
         <tr>
             <th>Тикер</th>
             <th>Макс доля</th>
