@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SummaryRepository extends JpaRepository<SummaryEntity, Long> {
     List<SummaryEntity> findAllByUserName(String user);
+    SummaryEntity findByInstrumentName(String name);
 }

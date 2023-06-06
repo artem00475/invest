@@ -21,32 +21,23 @@ public class MainController {
     @GetMapping("/")
     public String goHome(Model model) {
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+        model.addAttribute("summaryRequest", new SummaryRequest());
         return "home";
     }
 
-    @GetMapping("/AddSummary")
-    public String addSummary(Model model) {
-        model.addAttribute("summaryRequest", new SummaryRequest());
-        return "addSummary";
-    }
-
-    @PostMapping("/AddSummary")
+    @PostMapping("/")
     public String addSummary(Model model, @ModelAttribute SummaryRequest summaryRequest) {
-        try {
-            SummaryEntity summaryEntity = new SummaryEntity();
-            summaryEntity.setInstrumentName(summaryRequest.getInstrumentName());
-            summaryEntity.setSum(Float.parseFloat(summaryRequest.getSum()));
-            summaryEntity.setChange(Float.parseFloat(summaryRequest.getChange()));
-            summaryEntity.setChangeInPercents(Float.parseFloat(summaryRequest.getChangeInPercents()));
-            summaryEntity.setPercentFromAll(Float.parseFloat(summaryRequest.getPercentFromAll()));
-            summaryEntity.setInvested(Float.parseFloat(summaryRequest.getInvested()));
-            summaryEntity.setChangeFromInvested(Float.parseFloat(summaryRequest.getChangeFromInvested()));
-            summaryEntity.setUserName("Artem");
-            summaryService.addToSummery(summaryEntity);
-            System.out.println("Added");
-        } catch (NumberFormatException e) {
-            System.out.println("Error");
-        }
+        if (summaryService.checkInstrument(summaryRequest.getInstrumentName())) {
+            try {
+                SummaryEntity summaryEntity = new SummaryEntity();
+                summaryEntity.setInstrumentName(summaryRequest.getInstrumentName());
+                summaryEntity.setUserName("Artem");
+                summaryService.addToSummery(summaryEntity);
+                System.out.println("Added");
+            } catch (NumberFormatException e) {
+                System.out.println("Error");
+            }
+        } else System.out.println("Already exist");
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
         return "home";
     }

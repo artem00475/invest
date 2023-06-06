@@ -7,10 +7,4 @@ import lombok.Setter;
 @Setter
 public class SummaryRequest {
     private String instrumentName;
-    private String sum;
-    private String change;
-    private String changeInPercents;
-    private String percentFromAll;
-    private String invested;
-    private String changeFromInvested;
 }
