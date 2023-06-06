@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${instrumentName}"></title>
+</head>
+<body>
+<a href="/">Портфель</a>
+<h1 th:text="'Покупки ' + ${instrumentName}"></h1>
+<div th:if="${ not#lists.isEmpty(buys)}">
+    <table>
+        <tr>
+            <th>Дата</th>
+            <th>Тикер</th>
+            <th>Цена</th>
+            <th>Количество</th>
+            <th>Сумма</th>
+        </tr>
+        <tr th:each="buy : ${buys}">
+            <td th:text="${buy.date}"></td>
+            <td th:text="${buy.ticker}"></td>
+            <td th:text="${buy.cost}"></td>
+            <td th:text="${buy.count}"></td>
+            <td th:text="${buy.sum}"></td>
+        </tr>
+    </table>
+</div>
+<div th:unless="${ not#lists.isEmpty(buys)}">Пока здесь ничего нет</div>
+<form action="#" th:action="@{/Accounting/Buy}" th:object="${buyRequest}" method="post">
+    <label>
+        Тикер
+        <input type="text" th:field="*{ticker}">
+    </label></br>
+    <label>
+        Цена
+        <input type="text" th:field="*{cost}">
+    </label></br>
+    <label>
+        Количество
+        <input type="text" th:field="*{count}">
+    </label></br>
+    <input type="submit" value="Добавить"/>
+</form>
+</br>
+<a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}">Назад</a>
+</body>
+</html>

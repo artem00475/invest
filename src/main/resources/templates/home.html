@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Портфель</title>
 </head>
 <body>
 <h1>Портфель</h1>
@@ -18,7 +18,7 @@
             <th>Изменение от пополнения</th>
         </tr>
         <tr th:each="sum : ${summary}">
-            <td th:text="${sum.instrumentName}"></td>
+            <td><a th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}" th:text="${sum.instrumentName}"></a></td>
             <td th:text="${sum.sum}"></td>
             <td th:text="${sum.change}"></td>
             <td th:text="${sum.changeInPercents}"></td>

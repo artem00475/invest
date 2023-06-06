@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${instrumentName}"></title>
+</head>
+<body>
+<a href="/">Портфель</a>
+<h1 th:text="${instrumentName}"></h1>
+<p>
+    <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
+</p>
+</body>
+</html>
