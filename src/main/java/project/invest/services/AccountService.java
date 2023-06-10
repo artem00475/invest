@@ -95,6 +95,8 @@ public class AccountService {
         float sum = 0;
         float change = 0;
         for (Account account : accounts) {
+            account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
+            accountRepository.save(account);
             sum += account.getCount()*account.getCurrentCost();
             change += account.getChange();
         }
@@ -123,5 +125,9 @@ public class AccountService {
             el.setCurrentCost(paperRepository.findByTicker(el.getTicker()).getCost());
         });
         accountRepository.saveAll(accounts);
+        List<SummaryEntity> summaryEntities = summaryService.getAllByUserName("Artem");
+        summaryEntities.forEach(el -> {
+            updateSummary(el.getInstrumentName());
+        });
     }
 }
