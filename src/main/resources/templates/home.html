@@ -5,6 +5,7 @@
     <title>Портфель</title>
     <link rel="stylesheet" th:href="@{table.css}">
     <link rel="stylesheet" th:href="@{header.css}">
+    <link rel="script" th:href="@{fetchCost.js}">
 </head>
 <body>
 <div class="header">
@@ -41,5 +42,7 @@
     </label></br>
     <input type="submit" value="Добавить"/>
 </form>
+<script type="text/javascript" th:src="@{fetchCost.js}" src="static/fetchCost.js"></script>
+<script type="text/javascript">fetchCost()</script>
 </body>
 </html>
