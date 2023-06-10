@@ -1,12 +1,16 @@
 package project.invest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.invest.controllers.requests.SummaryRequest;
 import project.invest.jpa.entities.SummaryEntity;
+import project.invest.services.AccountService;
 import project.invest.services.SummaryService;
+
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -14,14 +18,24 @@ public class MainController {
     @Autowired
     private final SummaryService summaryService;
 
-    public MainController(SummaryService summaryService) {
+    @Autowired
+    private final AccountService accountService;
+
+    public MainController(SummaryService summaryService, AccountService accountService) {
         this.summaryService = summaryService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/")
     public String goHome(Model model) {
-        model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
-        model.addAttribute("summaryRequest", new SummaryRequest());
+        if (!accountService.getTickers().isEmpty()) {
+            model.addAttribute("ifUpdated", 0);
+            model.addAttribute("tickers", accountService.getTickers());
+        } else {
+            model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+            model.addAttribute("summaryRequest", new SummaryRequest());
+            model.addAttribute("ifUpdated", 1);
+        }
         return "home";
     }
 
@@ -39,6 +53,21 @@ public class MainController {
             }
         } else System.out.println("Already exist");
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+        model.addAttribute("ifUpdated", 1);
+        return "home";
+    }
+
+    @PostMapping("/cost")
+    public ResponseEntity<String> cost(@RequestBody List<String> costRequest) {
+        accountService.updateCost(costRequest);
+        return ResponseEntity.ok("Updated.");
+    }
+
+    @GetMapping("/update")
+    public String updated(Model model) {
+        model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+        model.addAttribute("summaryRequest", new SummaryRequest());
+        model.addAttribute("ifUpdated", 1);
         return "home";
     }
 }

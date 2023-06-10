@@ -12,37 +12,55 @@
     <a href="#default" class="logo">Портфель</a>
 </div>
 </br>
-<div th:if="${ not#lists.isEmpty(summary)}">
-    <table class="table">
-        <tr>
-            <th>Название</th>
-            <th>Сумма</th>
-            <th>Изменение</th>
-            <th>Изменение в %</th>
-            <th>% в портфеле</th>
-            <th>Инвестировано</th>
-            <th>Изменение от пополнения</th>
-        </tr>
-        <tr th:each="sum : ${summary}">
-            <td><a th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}" th:text="${sum.instrumentName}"></a></td>
-            <td th:text="${sum.sum}"></td>
-            <td th:text="${sum.change}"></td>
-            <td th:text="${sum.changeInPercents}"></td>
-            <td th:text="${sum.percentFromAll}"></td>
-            <td th:text="${sum.invested}"></td>
-            <td th:text="${sum.changeFromInvested}"></td>
-        </tr>
-    </table>
+<div th:switch="${ifUpdated}">
+    <div th:case="1">
+        <script type="text/javascript">
+            history.pushState(null, null, "http://localhost:8080/");
+        </script>
+        <div th:if="${ not#lists.isEmpty(summary)}">
+            <table class="table">
+                <tr>
+                    <th>Название</th>
+                    <th>Сумма</th>
+                    <th>Изменение</th>
+                    <th>Изменение в %</th>
+                    <th>% в портфеле</th>
+                    <th>Инвестировано</th>
+                    <th>Изменение от пополнения</th>
+                </tr>
+                <tr th:each="sum : ${summary}">
+                    <td><a th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}"
+                           th:text="${sum.instrumentName}"></a></td>
+                    <td th:text="${sum.sum}"></td>
+                    <td th:text="${sum.change}"></td>
+                    <td th:text="${sum.changeInPercents}"></td>
+                    <td th:text="${sum.percentFromAll}"></td>
+                    <td th:text="${sum.invested}"></td>
+                    <td th:text="${sum.changeFromInvested}"></td>
+                </tr>
+            </table>
+        </div>
+        <div th:unless="${ not#lists.isEmpty(summary)}">Здесь пока ничего нет</div>
+        <form action="#" th:action="@{/}" th:object="${summaryRequest}" method="post">
+            <label>
+                Название инструмента
+                <input type="text" th:field="*{instrumentName}">
+            </label></br>
+            <input type="submit" value="Добавить"/>
+        </form>
+    </div>
+    <div th:case="0">
+        <h1>Loading...</h1>
+        <script type="text/javascript" th:src="@{fetchCost.js}" src="static/fetchCost.js"></script>
+        <script th:inline="javascript">
+            let tickers = [[${tickers}]];
+            fetchCost(tickers);
+        </script>
+        <form action="#" th:action="@{/update}" method="get">
+            <input id="update_cost" type="submit" value="Добавить" style="display: none"/>
+        </form>
+    </div>
+    </div>
 </div>
-<div th:unless="${ not#lists.isEmpty(summary)}">Здесь пока ничего нет</div>
-<form action="#" th:action="@{/}" th:object="${summaryRequest}" method="post">
-    <label>
-        Название инструмента
-        <input type="text" th:field="*{instrumentName}">
-    </label></br>
-    <input type="submit" value="Добавить"/>
-</form>
-<script type="text/javascript" th:src="@{fetchCost.js}" src="static/fetchCost.js"></script>
-<script type="text/javascript">fetchCost()</script>
 </body>
 </html>
