@@ -5,6 +5,6 @@ import project.invest.jpa.entities.Deposit;
 
 import java.util.List;
 
-public interface DepositRepository extends JpaRepository<Deposit, String> {
+public interface DepositRepository extends JpaRepository<Deposit, Long> {
     List<Deposit> findAllByInstrumentName(String name);
 }
