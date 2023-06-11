@@ -7,6 +7,7 @@ import project.invest.jpa.entities.*;
 import project.invest.jpa.repositories.AccountRepository;
 import project.invest.jpa.repositories.PaperRepository;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +75,9 @@ public class AccountService {
                 accountRepository.removeById(account.getId());
                 if (accountRepository.findAllByTicker(accountSell.getTicker()).isEmpty()) paperRepository.removeByTicker(account.getTicker());
             } else {
-                account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
+                account.setChange((account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost()));
                 accountRepository.save(account);
+
             }
             updateSummary(accountSell.getInstrumentName());
         }
@@ -92,6 +94,7 @@ public class AccountService {
         float change = 0;
         for (Account account : accounts) {
             account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
+            account.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(account.getChange()/(account.getAverageCost()*account.getCount())).replace(',','.')));
             accountRepository.save(account);
             sum += account.getCount()*account.getCurrentCost();
             change += account.getChange();
