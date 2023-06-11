@@ -25,4 +25,6 @@ public class SummaryEntity {
     private float invested;
     private float changeFromInvested;
     private String userName;
+    private float balance;
+    private float result;
 }

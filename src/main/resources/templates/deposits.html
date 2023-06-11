@@ -8,13 +8,13 @@
 </head>
 <body>
 <div class="header">
-    <a href="#default" class="logo">Дивиденды</a>
+    <a href="#default" class="logo">Пополнение</a>
     <div class="header-right">
         <a class="active" href="/">Портфель</a>
         <a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}" th:text="${instrumentName}"></a>
-        <a th:href="@{/Accounting/Deposit?instrumentName={name}(name=${instrumentName})}">Пополнить</a>
         <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
         <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
+        <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
     </div>
 </div>
 </br>
@@ -24,43 +24,27 @@
         alert(error);
     }
 </script>
-<div th:if="${ not#lists.isEmpty(dividends)}">
+<div th:if="${ not#lists.isEmpty(deposits)}">
     <table class="table">
         <tr>
             <th>Дата</th>
-            <th>Тикер</th>
-            <th>Цена</th>
-            <th>Количество</th>
             <th>Сумма</th>
-            <th>Налог</th>
         </tr>
-        <tr th:each="dividend : ${dividends}">
-            <td th:text="${dividend.date}"></td>
-            <td th:text="${dividend.ticker}"></td>
-            <td th:text="${dividend.cost}"></td>
-            <td th:text="${dividend.count}"></td>
-            <td th:text="${dividend.sum}"></td>
-            <td th:text="${dividend.tax}"></td>
+        <tr th:each="deposit : ${deposits}">
+            <td th:text="${deposit.date}"></td>
+            <td th:text="${deposit.sum}"></td>
         </tr>
     </table>
 </div>
-<div th:unless="${ not#lists.isEmpty(dividends)}">Пока здесь ничего нет</div>
-<form action="#" th:action="@{/Accounting/Dividends}" th:object="${dividendsRequest}" method="post">
+<div th:unless="${ not#lists.isEmpty(deposits)}">Пока здесь ничего нет</div>
+<form action="#" th:action="@{/Accounting/Deposit}" th:object="${depositRequest}" method="post">
     <label>
         Дата
         <input type="date" th:field="*{date}">
     </label></br>
     <label>
-        Тикер
-        <input type="text" th:field="*{ticker}">
-    </label></br>
-    <label>
-        Цена
-        <input type="text" th:field="*{cost}">
-    </label></br>
-    <label>
-        Количество
-        <input type="text" th:field="*{count}">
+        Сумма
+        <input type="text" th:field="*{sum}">
     </label></br>
     <input type="submit" value="Добавить"/>
 </form>

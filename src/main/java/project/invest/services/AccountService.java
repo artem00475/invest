@@ -49,6 +49,9 @@ public class AccountService {
             account.setCount(account.getCount()+accountBuy.getCount());
             accountRepository.save(account);
         }
+        SummaryEntity summaryEntity = summaryService.getSummary(accountBuy.getInstrumentName());
+        summaryEntity.setBalance(summaryEntity.getBalance()-accountBuy.getSum());
+        summaryService.addToSummery(summaryEntity);
         updateSummary(accountBuy.getInstrumentName());
     }
 
@@ -64,6 +67,10 @@ public class AccountService {
             account.setDividends(account.getDividends()+dividends.getSum());
             accountRepository.save(account);
         }
+        SummaryEntity summaryEntity = summaryService.getSummary(dividends.getInstrumentName());
+        summaryEntity.setBalance(summaryEntity.getBalance()+dividends.getSum());
+        summaryEntity.setResult(summaryEntity.getResult()+dividends.getSum());
+        summaryService.addToSummery(summaryEntity);
         updateSummary(dividends.getInstrumentName());
     }
     @Transactional
@@ -79,6 +86,10 @@ public class AccountService {
                 accountRepository.save(account);
 
             }
+            SummaryEntity summaryEntity = summaryService.getSummary(accountSell.getInstrumentName());
+            summaryEntity.setBalance(summaryEntity.getBalance()+accountSell.getSum());
+            summaryEntity.setResult(summaryEntity.getResult()+accountSell.getChange());
+            summaryService.addToSummery(summaryEntity);
             updateSummary(accountSell.getInstrumentName());
         }
     }
@@ -99,6 +110,7 @@ public class AccountService {
             sum += account.getCount()*account.getCurrentCost();
             change += account.getChange();
         }
+        sum += summaryEntity.getBalance();
         summaryEntity.setSum(sum);
         summaryEntity.setChange(change);
         summaryService.addToSummery(summaryEntity);
@@ -137,5 +149,9 @@ public class AccountService {
         summaryEntities.forEach(el -> {
             updateSummary(el.getInstrumentName());
         });
+    }
+
+    public float getBalance(String instrumentName) {
+        return summaryService.getSummary(instrumentName).getBalance();
     }
 }

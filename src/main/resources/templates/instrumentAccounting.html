@@ -11,11 +11,17 @@
     <a href="#default" class="logo" th:text="${instrumentName}"></a>
     <div class="header-right">
         <a class="active" href="/">Портфель</a>
+        <a th:href="@{/Accounting/Deposit?instrumentName={name}(name=${instrumentName})}">Пополнить</a>
         <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
         <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
         <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
     </div>
 </div>
+</br>
+<label>
+    Баланс:
+</label>
+<p th:text="${balance}"></p>
 </br>
 <div th:if="${ not#lists.isEmpty(accounts)}">
     <table class="table">

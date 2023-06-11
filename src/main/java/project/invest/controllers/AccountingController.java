@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import project.invest.controllers.requests.BuyRequest;
+import project.invest.controllers.requests.DepositRequest;
 import project.invest.controllers.requests.DividendsRequest;
 import project.invest.controllers.requests.SellRequest;
 import project.invest.jpa.entities.*;
-import project.invest.services.AccountBuyService;
-import project.invest.services.AccountService;
-import project.invest.services.DividendsService;
-import project.invest.services.SellsService;
+import project.invest.services.*;
 
 import java.util.Objects;
 
@@ -30,12 +28,15 @@ public class AccountingController {
     private final DividendsService dividendsService;
     @Autowired
     private final SellsService sellsService;
+    @Autowired
+    private final DepositService depositService;
 
-    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService) {
+    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService, DepositService depositService) {
         this.accountBuyService = accountBuyService;
         this.accountService = accountService;
         this.dividendsService = dividendsService;
         this.sellsService = sellsService;
+        this.depositService = depositService;
     }
 
     @GetMapping("/Accounting")
@@ -43,6 +44,7 @@ public class AccountingController {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
+        model.addAttribute("balance", accountService.getBalance(instrumentName));
         return "instrumentAccounting";
     }
 
@@ -155,5 +157,31 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("sells", sellsService.getSells(instrumentName));
         return "sell";
+    }
+
+    @GetMapping("/Accounting/Deposit")
+    public String getDeposits(@RequestParam String instrumentName, Model model) {
+        this.instrumentName = instrumentName;
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("deposits", depositService.getDeposits(instrumentName));
+        model.addAttribute("depositRequest", new DepositRequest());
+        return "deposits";
+    }
+
+    @PostMapping("/Accounting/Deposit")
+    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model) {
+        try {
+            Deposit deposit = new Deposit();
+            deposit.setDate(depositRequest.getDate());
+            deposit.setSum(Float.parseFloat(depositRequest.getSum()));
+            deposit.setInstrumentName(instrumentName);
+            depositService.deposit(deposit);
+        } catch (NumberFormatException e) {
+            System.out.println("Error");
+            model.addAttribute("error", "Некорректные значения");
+        }
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("deposits", depositService.getDeposits(instrumentName));
+        return "deposits";
     }
 }
