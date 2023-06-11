@@ -59,9 +59,12 @@ function getBondsCost(tickers, costs) {
             // console.log(data[1]["securities"])
             for (let i = 0; i< data[1]["securities"].length;i++) {
                 const el = data[1]["securities"][i]
-                // console.log(el)
                 if (tickers.includes(el["SECID"])) {
-                    let cost = el["PREVPRICE"] * 0.01 * el["LOTVALUE"]
+                    let cost = 0
+                    if (el["SECID"].startsWith("RU000A100") || el["SECID"].startsWith("RU000A102") || el["SECID"].startsWith("RU000A103"))
+                        cost = el["PREVPRICE"] * 0.01 * el["LOTVALUE"] + el["ACCRUEDINT"]
+                    else
+                        cost = el["PREVPRICE"] * 0.01 * el["LOTVALUE"]
                     costs.push(el["SECID"]+'###'+cost.toString()+'###'+el["SECNAME"])
                 }
             }

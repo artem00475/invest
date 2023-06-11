@@ -131,8 +131,7 @@ public class AccountService {
     public void updateCost(List<String> costRequest) {
         costRequest.forEach(el -> {
             String[] a = el.split("###");
-            Paper paper = new Paper();
-            paper.setTicker(a[0]);
+            Paper paper = paperRepository.findByTicker(a[0]);
             paper.setCost(Float.parseFloat(a[1]));
             paper.setName(a[2]);
             paperRepository.save(paper);
