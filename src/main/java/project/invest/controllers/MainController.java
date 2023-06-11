@@ -28,14 +28,9 @@ public class MainController {
 
     @GetMapping("/")
     public String goHome(Model model) {
-        if (!accountService.getTickers().isEmpty()) {
-            model.addAttribute("ifUpdated", 0);
-            model.addAttribute("tickers", accountService.getTickers());
-        } else {
-            model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
-            model.addAttribute("summaryRequest", new SummaryRequest());
-            model.addAttribute("ifUpdated", 1);
-        }
+        model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+        model.addAttribute("summaryRequest", new SummaryRequest());
+        model.addAttribute("ifUpdated", 1);
         return "home";
     }
 
@@ -63,11 +58,23 @@ public class MainController {
         return ResponseEntity.ok("Updated.");
     }
 
-    @GetMapping("/update")
+    @PostMapping("/update")
     public String updated(Model model) {
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
         model.addAttribute("summaryRequest", new SummaryRequest());
         model.addAttribute("ifUpdated", 1);
         return "home";
     }
+
+    @GetMapping("/update")
+    public String update(Model model) {
+        model.addAttribute("ifUpdated", 0);
+        model.addAttribute("tickers", accountService.getTickers());
+        return "home";
+    }
+
+
+
+
+
 }

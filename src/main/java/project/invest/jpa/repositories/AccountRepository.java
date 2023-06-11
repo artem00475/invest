@@ -10,4 +10,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     void removeById(long id);
     List<Account> findAllByInstrumentName(String name);
     List<Account> findAll();
+    List<Account> findAllByTicker(String ticker);
 }

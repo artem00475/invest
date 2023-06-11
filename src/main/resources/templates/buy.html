@@ -53,6 +53,13 @@
         Количество
         <input type="text" th:field="*{count}">
     </label></br>
+    <label>
+        Тип бумаги
+        <select th:field="*{type}">
+            <option value="акция">Акция</option>
+            <option value="облигация">Облигация</option>
+        </select>
+    </label>
     <input type="submit" value="Добавить"/>
 </form>
 </br>

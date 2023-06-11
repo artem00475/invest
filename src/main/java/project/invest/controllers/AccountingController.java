@@ -10,14 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import project.invest.controllers.requests.BuyRequest;
 import project.invest.controllers.requests.DividendsRequest;
 import project.invest.controllers.requests.SellRequest;
-import project.invest.jpa.entities.Account;
-import project.invest.jpa.entities.AccountBuy;
-import project.invest.jpa.entities.AccountSell;
-import project.invest.jpa.entities.Dividends;
+import project.invest.jpa.entities.*;
 import project.invest.services.AccountBuyService;
 import project.invest.services.AccountService;
 import project.invest.services.DividendsService;
 import project.invest.services.SellsService;
+
+import java.util.Objects;
 
 @Controller
 public class AccountingController {
@@ -68,7 +67,10 @@ public class AccountingController {
             accountBuy.setDate(buyRequest.getDate());
             accountBuyService.addBuy(accountBuy);
             System.out.println("Added");
-            accountService.addAccount(accountBuy);
+            PaperTypeEnum type;
+            if (Objects.equals(buyRequest.getType(), "акция")) type=PaperTypeEnum.STOCK;
+            else type=PaperTypeEnum.BOND;
+            accountService.addAccount(accountBuy, type);
         } catch (NumberFormatException e) {
             System.out.println("Error");
         }

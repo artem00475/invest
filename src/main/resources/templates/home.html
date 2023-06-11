@@ -48,6 +48,7 @@
             </label></br>
             <input type="submit" value="Добавить"/>
         </form>
+        <button value="Обновить цены" onclick="window.location.href='http://localhost:8080/update'">Обновить цены</button>
     </div>
     <div th:case="0">
         <h1>Loading...</h1>
@@ -56,7 +57,7 @@
             let tickers = [[${tickers}]];
             fetchCost(tickers);
         </script>
-        <form action="#" th:action="@{/update}" method="get">
+        <form action="#" th:action="@{/update}" method="post">
             <input id="update_cost" type="submit" value="Добавить" style="display: none"/>
         </form>
     </div>

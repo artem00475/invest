@@ -14,4 +14,5 @@ public class BuyRequest {
     private String ticker;
     private String cost;
     private String count;
+    private String type;
 }

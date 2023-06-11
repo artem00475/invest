@@ -28,7 +28,7 @@ public class AccountService {
         this.paperRepository = paperRepository;
     }
 
-    public void addAccount(AccountBuy accountBuy) {
+    public void addAccount(AccountBuy accountBuy, PaperTypeEnum type) {
         Account account = accountRepository.findByInstrumentNameAndTicker(accountBuy.getInstrumentName(), accountBuy.getTicker());
         if (account == null) {
             account = new Account();
@@ -40,6 +40,7 @@ public class AccountService {
             if (paperRepository.findByTicker(account.getTicker())==null) {
                 Paper paper = new Paper();
                 paper.setTicker(account.getTicker());
+                paper.setType(type);
                 paperRepository.save(paper);
             }
         } else {
@@ -58,11 +59,6 @@ public class AccountService {
             account.setTicker(dividends.getTicker());
             account.setDividends(dividends.getSum());
             accountRepository.save(account);
-            if (paperRepository.findByTicker(account.getTicker())==null) {
-                Paper paper = new Paper();
-                paper.setTicker(account.getTicker());
-                paperRepository.save(paper);
-            }
         } else {
             account.setDividends(account.getDividends()+dividends.getSum());
             accountRepository.save(account);
@@ -76,7 +72,7 @@ public class AccountService {
             account.setCount(account.getCount()-accountSell.getCount());
             if (account.getCount() ==0) {
                 accountRepository.removeById(account.getId());
-                paperRepository.removeByTicker(account.getTicker());
+                if (accountRepository.findAllByTicker(accountSell.getTicker()).isEmpty()) paperRepository.removeByTicker(account.getTicker());
             } else {
                 account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
                 accountRepository.save(account);
@@ -105,11 +101,17 @@ public class AccountService {
         summaryService.addToSummery(summaryEntity);
     }
 
-    public List<String> getTickers() {
+    public List<List<String>> getTickers() {
         List<String> list = new ArrayList<>();
-        List<Paper> papers = paperRepository.findAll();
+        List<Paper> papers = paperRepository.findAllByType(PaperTypeEnum.STOCK);
         papers.forEach(paper -> list.add(paper.getTicker()));
-        return list;
+        List<String> list1 = new ArrayList<>();
+        papers = paperRepository.findAllByType(PaperTypeEnum.BOND);
+        papers.forEach(paper -> list1.add(paper.getTicker()));
+        List<List<String>> tickers = new ArrayList<>();
+        tickers.add(list);
+        tickers.add(list1);
+        return tickers;
     }
 
     public void updateCost(List<String> costRequest) {
