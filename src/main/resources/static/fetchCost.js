@@ -25,7 +25,7 @@ function fetchCost(tickers) {
                 const el = data[1]["securities"][i]
                 console.log(el)
                 if (tickers[0].includes(el["SECID"])) {
-                    costs.push(el["SECID"]+' '+el["PREVPRICE"])
+                    costs.push(el["SECID"]+'###'+el["PREVPRICE"]+'###'+el["SECNAME"])
                 }
             }
             getBondsCost(tickers[1], costs)
@@ -62,7 +62,7 @@ function getBondsCost(tickers, costs) {
                 // console.log(el)
                 if (tickers.includes(el["SECID"])) {
                     let cost = el["PREVPRICE"] * 0.01 * el["LOTVALUE"]
-                    costs.push(el["SECID"]+' '+cost.toString())
+                    costs.push(el["SECID"]+'###'+cost.toString()+'###'+el["SECNAME"])
                 }
             }
             console.log(costs)

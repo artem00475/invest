@@ -116,15 +116,18 @@ public class AccountService {
 
     public void updateCost(List<String> costRequest) {
         costRequest.forEach(el -> {
-            String[] a = el.split(" ");
+            String[] a = el.split("###");
             Paper paper = new Paper();
             paper.setTicker(a[0]);
             paper.setCost(Float.parseFloat(a[1]));
+            paper.setName(a[2]);
             paperRepository.save(paper);
         });
         List<Account> accounts = accountRepository.findAll();
         accounts.forEach(el -> {
-            el.setCurrentCost(paperRepository.findByTicker(el.getTicker()).getCost());
+            Paper paper = paperRepository.findByTicker(el.getTicker());
+            el.setCurrentCost(paper.getCost());
+            el.setName(paper.getName());
         });
         accountRepository.saveAll(accounts);
         List<SummaryEntity> summaryEntities = summaryService.getAllByUserName("Artem");

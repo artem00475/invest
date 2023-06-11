@@ -20,7 +20,7 @@
 <div th:if="${ not#lists.isEmpty(accounts)}">
     <table class="table">
         <tr>
-            <th>Тикер</th>
+            <th>Название</th>
             <th>Макс доля</th>
             <th>Текущая цена</th>
             <th>Количество</th>
@@ -33,7 +33,7 @@
             <th>Дивиденды</th>
         </tr>
         <tr th:each="account : ${accounts}">
-            <td th:text="${account.ticker}"></td>
+            <td th:text="${account.name}"></td>
             <td th:text="${account.maxShare}"></td>
             <td th:text="${account.currentCost}"></td>
             <td th:text="${account.count}"></td>

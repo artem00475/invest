@@ -26,4 +26,5 @@ public class Account {
     private float changeInPercents;
     private float dividends;
     private String instrumentName;
+    private String name;
 }

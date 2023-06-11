@@ -14,5 +14,6 @@ public class Paper {
     private String ticker;
     private float cost;
     private PaperTypeEnum type;
+    private String name;
 
 }
