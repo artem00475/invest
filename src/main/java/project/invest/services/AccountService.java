@@ -102,17 +102,16 @@ public class AccountService {
         SummaryEntity summaryEntity = summaryService.getSummary(instrumentName);
         List<Account> accounts = accountRepository.findAllByInstrumentName(instrumentName);
         float sum = 0;
-        float change = 0;
         for (Account account : accounts) {
             account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
             account.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(account.getChange()/(account.getAverageCost()*account.getCount())).replace(',','.')));
             accountRepository.save(account);
             sum += account.getCount()*account.getCurrentCost();
-            change += account.getChange();
         }
         sum += summaryEntity.getBalance();
         summaryEntity.setSum(sum);
-        summaryEntity.setChange(change);
+        summaryEntity.setChange(summaryEntity.getSum()-summaryEntity.getResult());
+        summaryEntity.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(summaryEntity.getChange()/summaryEntity.getResult()).replace(',','.')));
         summaryService.addToSummery(summaryEntity);
     }
 
@@ -149,6 +148,8 @@ public class AccountService {
         summaryEntities.forEach(el -> {
             updateSummary(el.getInstrumentName());
         });
+        summaryService.updatePercentFromAll();
+        summaryService.updateChangeFromInvested();
     }
 
     public float getBalance(String instrumentName) {
