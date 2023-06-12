@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import project.invest.controllers.requests.BuyRequest;
-import project.invest.controllers.requests.DepositRequest;
-import project.invest.controllers.requests.DividendsRequest;
-import project.invest.controllers.requests.SellRequest;
+import project.invest.controllers.requests.*;
 import project.invest.jpa.entities.*;
 import project.invest.services.*;
 
@@ -30,13 +27,16 @@ public class AccountingController {
     private final SellsService sellsService;
     @Autowired
     private final DepositService depositService;
+    @Autowired
+    private final CommissionService commissionService;
 
-    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService, DepositService depositService) {
+    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService, DepositService depositService, CommissionService commissionService) {
         this.accountBuyService = accountBuyService;
         this.accountService = accountService;
         this.dividendsService = dividendsService;
         this.sellsService = sellsService;
         this.depositService = depositService;
+        this.commissionService = commissionService;
     }
 
     @GetMapping("/Accounting")
@@ -183,5 +183,31 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("deposits", depositService.getDeposits(instrumentName));
         return "deposits";
+    }
+
+    @GetMapping("/Accounting/Commission")
+    public String getCommissions(@RequestParam String instrumentName, Model model) {
+        this.instrumentName = instrumentName;
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
+        model.addAttribute("commissionRequest", new CommissionRequest());
+        return "commissions";
+    }
+
+    @PostMapping("/Accounting/Commission")
+    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model) {
+        try {
+            Commission commission = new Commission();
+            commission.setDate(commissionRequest.getDate());
+            commission.setSum(Float.parseFloat(commissionRequest.getSum()));
+            commission.setInstrumentName(instrumentName);
+            commissionService.addCommission(commission);
+        } catch (NumberFormatException e) {
+            System.out.println("Error");
+            model.addAttribute("error", "Некорректные значения");
+        }
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
+        return "commissions";
     }
 }

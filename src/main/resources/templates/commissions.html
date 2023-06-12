@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${instrumentName}"></title>
+    <link rel="stylesheet" th:href="@{../table.css}">
+    <link rel="stylesheet" th:href="@{../header.css}">
+</head>
+<body>
+<div class="header">
+    <a href="#default" class="logo">Комиссия</a>
+    <div class="header-right">
+        <a class="active" href="/">Портфель</a>
+        <a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}" th:text="${instrumentName}"></a>
+        <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
+        <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
+        <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
+    </div>
+</div>
+</br>
+<script th:inline="javascript">
+    let error = [[${error}]];
+    if (error) {
+        alert(error);
+    }
+</script>
+<div th:if="${ not#lists.isEmpty(commissions)}">
+    <table class="table">
+        <tr>
+            <th>Дата</th>
+            <th>Сумма</th>
+        </tr>
+        <tr th:each="commission : ${commissions}">
+            <td th:text="${commission.date}"></td>
+            <td th:text="${commission.sum}"></td>
+        </tr>
+    </table>
+</div>
+<div th:unless="${ not#lists.isEmpty(commissions)}">Пока здесь ничего нет</div>
+<form action="#" th:action="@{/Accounting/Commission}" th:object="${commissionRequest}" method="post">
+    <label>
+        Дата
+        <input type="date" th:field="*{date}">
+    </label></br>
+    <label>
+        Сумма
+        <input type="text" th:field="*{sum}">
+    </label></br>
+    <input type="submit" value="Добавить"/>
+</form>
+</br>
+<a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}">Назад</a>
+</body>
+</html>
