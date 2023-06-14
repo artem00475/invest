@@ -29,6 +29,7 @@ public class MainController {
     @GetMapping("/")
     public String goHome(Model model) {
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+        model.addAttribute("total", summaryService.getTotal());
         model.addAttribute("summaryRequest", new SummaryRequest());
         model.addAttribute("ifUpdated", 1);
         return "home";
@@ -48,6 +49,7 @@ public class MainController {
             }
         } else System.out.println("Already exist");
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
+        model.addAttribute("total", summaryService.getTotal());
         model.addAttribute("ifUpdated", 1);
         return "home";
     }
@@ -62,6 +64,7 @@ public class MainController {
     public String updated(Model model) {
         model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
         model.addAttribute("summaryRequest", new SummaryRequest());
+        model.addAttribute("total", summaryService.getTotal());
         model.addAttribute("ifUpdated", 1);
         return "home";
     }

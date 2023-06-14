@@ -105,14 +105,14 @@ public class AccountService {
         float sum = 0;
         for (Account account : accounts) {
             account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
-            account.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(account.getChange()/(account.getAverageCost()*account.getCount())).replace(',','.')));
+            account.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(account.getChange()/(account.getAverageCost()*account.getCount())*100).replace(',','.')));
             accountRepository.save(account);
             sum += account.getCount()*account.getCurrentCost();
         }
         sum += summaryEntity.getBalance();
         summaryEntity.setSum(sum);
         summaryEntity.setChange(summaryEntity.getSum()-summaryEntity.getResult());
-        summaryEntity.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(summaryEntity.getChange()/summaryEntity.getResult()).replace(',','.')));
+        summaryEntity.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(summaryEntity.getChange()/summaryEntity.getResult()*100).replace(',','.')));
         summaryService.addToSummery(summaryEntity);
     }
 
@@ -126,10 +126,14 @@ public class AccountService {
         List<String> list2 = new ArrayList<>();
         papers = paperRepository.findAllByType(PaperTypeEnum.CURRENCY);
         papers.forEach(paper -> list2.add(paper.getTicker()));
+        List<String> list3 = new ArrayList<>();
+        papers = paperRepository.findAllByType(PaperTypeEnum.FUND);
+        papers.forEach(paper -> list3.add(paper.getTicker()));
         List<List<String>> tickers = new ArrayList<>();
         tickers.add(list);
         tickers.add(list1);
         tickers.add(list2);
+        tickers.add(list3);
         return tickers;
     }
 
@@ -159,4 +163,6 @@ public class AccountService {
     public float getBalance(String instrumentName) {
         return summaryService.getSummary(instrumentName).getBalance();
     }
+
+    public PaperTypeEnum getType(String ticker) {return paperRepository.findByTicker(ticker).getType();}
 }

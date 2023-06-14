@@ -28,6 +28,43 @@ function fetchCost(tickers) {
                     costs.push(el["SECID"]+'###'+el["PREVPRICE"]+'###'+el["SECNAME"])
                 }
             }
+            getReceiptsCost(tickers, costs)
+        })
+        .catch(function (error) {
+            console.log("Error: ",error)
+        })
+}
+
+function getReceiptsCost(tickers, costs) {
+    console.log(tickers[0])
+    fetch("\n" +
+        "https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities.jsonp?iss.meta=off&iss.json=extended&callback=JSON_CALLBACK&lang=ru&security_collection=130&sort_column=VALTODAY&sort_order=desc", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+        },
+    })
+        .then(function (response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then((response) => {
+            return response.text()
+        })
+        .then((data) => {
+            data = data.replace("JSON_CALLBACK(", '')
+            data = data.substr(0, data.length-1)
+            data = JSON.parse(data)
+            // console.log(data[1]["securities"])
+            for (let i = 0; i< data[1]["securities"].length;i++) {
+                const el = data[1]["securities"][i]
+                console.log(el)
+                if (tickers[0].includes(el["SECID"])) {
+                    costs.push(el["SECID"]+'###'+el["PREVPRICE"]+'###'+el["SECNAME"])
+                }
+            }
             getCurrencyCost(tickers, costs)
         })
         .catch(function (error) {
@@ -62,6 +99,81 @@ function getCurrencyCost(tickers, costs) {
                 console.log(el)
                 if (tickers[2].includes(el["SECID"])) {
                     costs.push(el["SECID"]+'###'+el["PREVPRICE"]+'###'+el["SECNAME"])
+                }
+            }
+            getFundCOst(tickers, costs)
+        })
+        .catch(function (error) {
+            console.log("Error: ",error)
+        })
+}
+
+
+function getFundCOst(tickers, costs) {
+    console.log(tickers[3])
+    fetch("\n" +
+        "https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities.jsonp?iss.meta=off&iss.json=extended&callback=JSON_CALLBACK&lang=ru&security_collection=59&sort_column=VALTODAY&sort_order=desc", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+        },
+    })
+        .then(function (response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then((response) => {
+            return response.text()
+        })
+        .then((data) => {
+            data = data.replace("JSON_CALLBACK(", '')
+            data = data.substr(0, data.length-1)
+            data = JSON.parse(data)
+            // console.log(data[1]["securities"])
+            for (let i = 0; i< data[1]["securities"].length;i++) {
+                const el = data[1]["securities"][i]
+                console.log(el)
+                if (tickers[3].includes(el["SECID"])) {
+                    costs.push(el["SECID"] + '###' + el["PREVPRICE"] + '###' + el["SECNAME"])
+                }
+            }
+            getFund1COst(tickers, costs)
+        })
+        .catch(function (error) {
+            console.log("Error: ",error)
+        })
+}
+
+function getFund1COst(tickers, costs) {
+    console.log(tickers[3])
+    fetch("\n" +
+        "https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities.jsonp?iss.meta=off&iss.json=extended&callback=JSON_CALLBACK&lang=ru&security_collection=151&sort_column=VALTODAY&sort_order=desc", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+        },
+    })
+        .then(function (response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then((response) => {
+            return response.text()
+        })
+        .then((data) => {
+            data = data.replace("JSON_CALLBACK(", '')
+            data = data.substr(0, data.length-1)
+            data = JSON.parse(data)
+            // console.log(data[1]["securities"])
+            for (let i = 0; i< data[1]["securities"].length;i++) {
+                const el = data[1]["securities"][i]
+                console.log(el)
+                if (tickers[3].includes(el["SECID"])) {
+                    costs.push(el["SECID"] + '###' + el["PREVPRICE"] + '###' + el["SECNAME"])
                 }
             }
             getBondsCost(tickers[1], costs)

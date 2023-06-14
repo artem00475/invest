@@ -72,6 +72,7 @@ public class AccountingController {
             PaperTypeEnum type;
             if (Objects.equals(buyRequest.getType(), "акция")) type=PaperTypeEnum.STOCK;
             else if (Objects.equals(buyRequest.getType(), "валюта")) type=PaperTypeEnum.CURRENCY;
+            else if (Objects.equals(buyRequest.getType(), "фонд")) type=PaperTypeEnum.FUND;
             else type=PaperTypeEnum.BOND;
             accountService.addAccount(accountBuy, type);
         } catch (NumberFormatException e) {
@@ -100,11 +101,13 @@ public class AccountingController {
                     Dividends dividends = new Dividends();
                     dividends.setCost(Float.parseFloat(dividendsRequest.getCost()));
                     dividends.setCount(Integer.parseInt(dividendsRequest.getCount()));
-                    dividends.setSum(dividends.getCost() * 0.87f * dividends.getCount());
+                    if (instrumentName.equals("ИИС") & accountService.getType(dividendsRequest.getTicker()) == PaperTypeEnum.BOND) dividends.setSum(dividends.getCost() * dividends.getCount());
+                    else dividends.setSum(dividends.getCost() * 0.87f * dividends.getCount());
                     dividends.setInstrumentName(instrumentName);
                     dividends.setTicker(dividendsRequest.getTicker());
                     dividends.setDate(dividendsRequest.getDate());
-                    dividends.setTax(dividends.getSum() * 0.13f);
+                    if (instrumentName.equals("ИИС") & accountService.getType(dividendsRequest.getTicker()) == PaperTypeEnum.BOND) dividends.setTax(0);
+                    else dividends.setTax(dividends.getSum() * 0.13f);
                     dividendsService.addDividends(dividends);
                     System.out.println("Added");
                     accountService.addAccount(dividends);

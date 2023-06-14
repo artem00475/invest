@@ -39,7 +39,7 @@ public class SummaryService {
         float total = getTotal();
         List<SummaryEntity> summaryEntities = summaryRepository.findAllByUserName("Artem");
         for (SummaryEntity summaryEntity : summaryEntities) {
-            summaryEntity.setPercentFromAll(Float.parseFloat(new DecimalFormat("#.###").format(summaryEntity.getSum()/total).replace(',','.')));
+            summaryEntity.setPercentFromAll(Float.parseFloat(new DecimalFormat("#.#").format(summaryEntity.getSum()/total*100).replace(',','.')));
         }
         summaryRepository.saveAll(summaryEntities);
     }

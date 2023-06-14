@@ -17,6 +17,8 @@
         <script type="text/javascript">
             history.pushState(null, null, "http://localhost:8080/");
         </script>
+        <h2 th:text="${'Всего: '+total}"></h2>
+        </br>
         <div th:if="${ not#lists.isEmpty(summary)}">
             <table class="table">
                 <tr>
