@@ -106,10 +106,13 @@ public class AccountService {
         for (Account account : accounts) {
             account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
             account.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(account.getChange()/(account.getAverageCost()*account.getCount())*100).replace(',','.')));
-            accountRepository.save(account);
             sum += account.getCount()*account.getCurrentCost();
         }
         sum += summaryEntity.getBalance();
+        for (Account account : accounts) {
+            account.setCurrentShare(Float.parseFloat(new DecimalFormat("#.#").format((account.getCurrentCost()*account.getCount())/sum*100).replace(',','.')));
+            accountRepository.save(account);
+        }
         summaryEntity.setSum(sum);
         summaryEntity.setChange(summaryEntity.getSum()-summaryEntity.getResult());
         summaryEntity.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(summaryEntity.getChange()/summaryEntity.getResult()*100).replace(',','.')));
