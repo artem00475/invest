@@ -28,6 +28,42 @@ function fetchCost(tickers) {
                     costs.push(el["SECID"]+'###'+el["PREVPRICE"]+'###'+el["SECNAME"])
                 }
             }
+            getCurrencyCost(tickers, costs)
+        })
+        .catch(function (error) {
+            console.log("Error: ",error)
+        })
+}
+
+function getCurrencyCost(tickers, costs) {
+    console.log(tickers[2])
+    fetch("https://iss.moex.com/iss/engines/currency/markets/selt/boardgroups/13/securities.jsonp?iss.meta=off&iss.json=extended&callback=JSON_CALLBACK&lang=ru&security_collection=177&sort_column=VALTODAY&sort_order=desc", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+        },
+    })
+        .then(function (response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then((response) => {
+            return response.text()
+        })
+        .then((data) => {
+            data = data.replace("JSON_CALLBACK(", '')
+            data = data.substr(0, data.length-1)
+            data = JSON.parse(data)
+            // console.log(data[1]["securities"])
+            for (let i = 0; i< data[1]["securities"].length;i++) {
+                const el = data[1]["securities"][i]
+                console.log(el)
+                if (tickers[2].includes(el["SECID"])) {
+                    costs.push(el["SECID"]+'###'+el["PREVPRICE"]+'###'+el["SECNAME"])
+                }
+            }
             getBondsCost(tickers[1], costs)
         })
         .catch(function (error) {

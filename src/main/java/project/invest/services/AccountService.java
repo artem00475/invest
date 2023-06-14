@@ -42,6 +42,7 @@ public class AccountService {
                 Paper paper = new Paper();
                 paper.setTicker(account.getTicker());
                 paper.setType(type);
+                System.out.println(paper.getTicker()+' '+paper.getType());
                 paperRepository.save(paper);
             }
         } else {
@@ -122,9 +123,13 @@ public class AccountService {
         List<String> list1 = new ArrayList<>();
         papers = paperRepository.findAllByType(PaperTypeEnum.BOND);
         papers.forEach(paper -> list1.add(paper.getTicker()));
+        List<String> list2 = new ArrayList<>();
+        papers = paperRepository.findAllByType(PaperTypeEnum.CURRENCY);
+        papers.forEach(paper -> list2.add(paper.getTicker()));
         List<List<String>> tickers = new ArrayList<>();
         tickers.add(list);
         tickers.add(list1);
+        tickers.add(list2);
         return tickers;
     }
 

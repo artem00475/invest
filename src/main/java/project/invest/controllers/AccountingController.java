@@ -71,6 +71,7 @@ public class AccountingController {
             System.out.println("Added");
             PaperTypeEnum type;
             if (Objects.equals(buyRequest.getType(), "акция")) type=PaperTypeEnum.STOCK;
+            else if (Objects.equals(buyRequest.getType(), "валюта")) type=PaperTypeEnum.CURRENCY;
             else type=PaperTypeEnum.BOND;
             accountService.addAccount(accountBuy, type);
         } catch (NumberFormatException e) {
