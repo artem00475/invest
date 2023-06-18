@@ -27,4 +27,5 @@ public class SummaryEntity {
     private String userName;
     private float balance;
     private float result;
+    private InstrumentTypeEnum instrumentTypeEnum;
 }

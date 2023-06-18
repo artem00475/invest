@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.invest.controllers.requests.SummaryRequest;
+import project.invest.jpa.entities.InstrumentTypeEnum;
 import project.invest.jpa.entities.SummaryEntity;
 import project.invest.services.AccountService;
 import project.invest.services.SummaryService;
@@ -41,6 +42,8 @@ public class MainController {
             try {
                 SummaryEntity summaryEntity = new SummaryEntity();
                 summaryEntity.setInstrumentName(summaryRequest.getInstrumentName());
+                if (summaryRequest.getType().equals("Брокерский счёт")) summaryEntity.setInstrumentTypeEnum(InstrumentTypeEnum.brokerageAccount);
+                else summaryEntity.setInstrumentTypeEnum(InstrumentTypeEnum.crowdfunding);
                 summaryEntity.setUserName("Artem");
                 summaryService.addToSummery(summaryEntity);
                 System.out.println("Added");

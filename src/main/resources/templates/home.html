@@ -31,8 +31,12 @@
                     <th>Изменение от пополнения</th>
                 </tr>
                 <tr th:each="sum : ${summary}">
-                    <td><a th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}"
-                           th:text="${sum.instrumentName}"></a></td>
+                    <td th:switch="${sum.instrumentTypeEnum}">
+                        <a th:case="${T(project.invest.jpa.entities.InstrumentTypeEnum).brokerageAccount}" th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}"
+                           th:text="${sum.instrumentName}"></a>
+                        <a th:case="${T(project.invest.jpa.entities.InstrumentTypeEnum).crowdfunding}" th:href="@{/Crowdfunding?instrumentName={name}(name=${sum.instrumentName})}"
+                           th:text="${sum.instrumentName}"></a>
+                    </td>
                     <td th:text="${sum.sum}"></td>
                     <td th:text="${sum.change}"></td>
                     <td th:text="${sum.changeInPercents}"></td>
@@ -47,6 +51,13 @@
             <label>
                 Название инструмента
                 <input type="text" th:field="*{instrumentName}">
+            </label></br>
+            <label>
+                Тип инструмента
+                <select th:field="*{type}">
+                    <option th:each="value : ${T(project.invest.jpa.entities.InstrumentTypeEnum).values()}"
+                            th:value="${value.displayValue}" th:text="${value.displayValue}"></option>
+                </select>
             </label></br>
             <input type="submit" value="Добавить"/>
         </form>

@@ -1,14 +1,12 @@
 package project.invest.jpa.entities;
 
-public enum PaperTypeEnum {
-    STOCK("Акция"),
-    BOND("Облигация"),
-    CURRENCY("Валюта"),
-    FUND("Фонд");
+public enum InstrumentTypeEnum {
+    brokerageAccount("Брокерский счёт"),
+    crowdfunding("Краудфандинг");
 
     private final String displayValue;
 
-    private PaperTypeEnum(String displayValue) {
+    private InstrumentTypeEnum(String displayValue) {
         this.displayValue = displayValue;
     }
 

@@ -45,7 +45,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("balance", accountService.getBalance(instrumentName));
-        return "instrumentAccounting";
+        return "brokerageAccount/instrumentAccounting";
     }
 
     @GetMapping("/Accounting/Buy")
@@ -54,7 +54,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
         model.addAttribute("buyRequest", new BuyRequest());
-        return "buy";
+        return "brokerageAccount/buy";
     }
 
     @PostMapping("/Accounting/Buy")
@@ -70,9 +70,9 @@ public class AccountingController {
             accountBuyService.addBuy(accountBuy);
             System.out.println("Added");
             PaperTypeEnum type;
-            if (Objects.equals(buyRequest.getType(), "акция")) type=PaperTypeEnum.STOCK;
-            else if (Objects.equals(buyRequest.getType(), "валюта")) type=PaperTypeEnum.CURRENCY;
-            else if (Objects.equals(buyRequest.getType(), "фонд")) type=PaperTypeEnum.FUND;
+            if (Objects.equals(buyRequest.getType(), "Акция")) type=PaperTypeEnum.STOCK;
+            else if (Objects.equals(buyRequest.getType(), "Валюта")) type=PaperTypeEnum.CURRENCY;
+            else if (Objects.equals(buyRequest.getType(), "Фонд")) type=PaperTypeEnum.FUND;
             else type=PaperTypeEnum.BOND;
             accountService.addAccount(accountBuy, type);
         } catch (NumberFormatException e) {
@@ -80,7 +80,7 @@ public class AccountingController {
         }
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
-        return "buy";
+        return "brokerageAccount/buy";
     }
 
     @GetMapping("/Accounting/Dividends")
@@ -89,7 +89,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         model.addAttribute("dividendsRequest", new DividendsRequest());
-        return "dividends";
+        return "brokerageAccount/dividends";
     }
 
     @PostMapping("/Accounting/Dividends")
@@ -119,7 +119,7 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
-        return "dividends";
+        return "brokerageAccount/dividends";
     }
 
     @GetMapping("/Accounting/Sell")
@@ -128,7 +128,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("sells", sellsService.getSells(instrumentName));
         model.addAttribute("sellRequest", new SellRequest());
-        return "sell";
+        return "brokerageAccount/sell";
     }
 
     @PostMapping("/Accounting/Sell")
@@ -160,7 +160,7 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("sells", sellsService.getSells(instrumentName));
-        return "sell";
+        return "brokerageAccount/sell";
     }
 
     @GetMapping("/Accounting/Deposit")
@@ -169,7 +169,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("deposits", depositService.getDeposits(instrumentName));
         model.addAttribute("depositRequest", new DepositRequest());
-        return "deposits";
+        return "brokerageAccount/deposits";
     }
 
     @PostMapping("/Accounting/Deposit")
@@ -186,7 +186,7 @@ public class AccountingController {
         }
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("deposits", depositService.getDeposits(instrumentName));
-        return "deposits";
+        return "brokerageAccount/deposits";
     }
 
     @GetMapping("/Accounting/Commission")
@@ -195,7 +195,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
         model.addAttribute("commissionRequest", new CommissionRequest());
-        return "commissions";
+        return "brokerageAccount/commissions";
     }
 
     @PostMapping("/Accounting/Commission")
@@ -212,6 +212,6 @@ public class AccountingController {
         }
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
-        return "commissions";
+        return "brokerageAccount/commissions";
     }
 }

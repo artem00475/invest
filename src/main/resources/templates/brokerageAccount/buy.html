@@ -57,10 +57,8 @@
     <label>
         Тип бумаги
         <select th:field="*{type}">
-            <option value="акция">Акция</option>
-            <option value="облигация">Облигация</option>
-            <option value="валюта">Валюта</option>
-            <option value="фонд">Фонд</option>
+            <option th:each="value : ${T(project.invest.jpa.entities.PaperTypeEnum).values()}"
+                    th:value="${value.displayValue}" th:text="${value.displayValue}"></option>
         </select>
     </label>
     <input type="submit" value="Добавить"/>
