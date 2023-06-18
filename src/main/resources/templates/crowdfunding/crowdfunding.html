@@ -11,42 +11,14 @@
     <a href="#default" class="logo" th:text="${instrumentName}"></a>
     <div class="header-right">
         <a class="active" href="/">Портфель</a>
-        <a th:href="@{/Accounting/Deposit?instrumentName={name}(name=${instrumentName})}">Пополнить</a>
-        <a th:href="@{/Accounting/Commission?instrumentName={name}(name=${instrumentName})}">Комиссия</a>
-        <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
-        <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
-        <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
+        <a th:href="@{/Crowdfunding/Deposit?instrumentName={name}(name=${instrumentName})}">Пополнить</a>
+        <a th:href="@{/Crowdfunding/Commission?instrumentName={name}(name=${instrumentName})}">Комиссия</a>
+        <a th:href="@{/Crowdfunding/Dividends?instrumentName={name}(name=${instrumentName})}">Выплаты</a>
     </div>
 </div>
 </br>
 <h2 th:text="${'Баланс: '+balance}"></h2>
+<h2 th:text="${'В займах: '+sum}"></h2>
 </br>
-<div th:if="${ not#lists.isEmpty(accounts)}">
-    <table class="table">
-        <tr>
-            <th>Название</th>
-            <th>Текущая цена</th>
-            <th>Количество</th>
-            <th>Текущая сумма</th>
-            <th>Текущая доля</th>
-            <th>Средняя цена</th>
-            <th>Изменение</th>
-            <th>Изменение в %</th>
-            <th>Дивиденды</th>
-        </tr>
-        <tr th:each="account : ${accounts}">
-            <td th:text="${account.name}"></td>
-            <td th:text="${account.currentCost}"></td>
-            <td th:text="${account.count}"></td>
-            <td th:text="${account.count*account.currentCost}"></td>
-            <td th:text="${account.currentShare}"></td>
-            <td th:text="${account.averageCost}"></td>
-            <td th:text="${account.change}"></td>
-            <td th:text="${account.changeInPercents}"></td>
-            <td th:text="${account.dividends}"></td>
-        </tr>
-    </table>
-</div>
-<div th:unless="${ not#lists.isEmpty(accounts)}">Пока здесь ничего нет</div>
 </body>
 </html>
