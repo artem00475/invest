@@ -5,6 +5,9 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{../table.css}">
     <link rel="stylesheet" th:href="@{../header.css}">
+    <link rel="stylesheet" th:href="@{../tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{../form.css}">
+    <link rel="stylesheet" th:href="@{../buttons.css}">
 </head>
 <body>
 <div class="header">
@@ -18,57 +21,59 @@
     </div>
 </div>
 </br>
-<script th:inline="javascript">
-    let error = [[${error}]];
-    if (error) {
-        alert(error);
-    }
-</script>
-<div th:if="${ not#lists.isEmpty(sells)}">
-    <table class="table">
-        <tr>
-            <th>Дата</th>
-            <th>Тикер</th>
-            <th>Цена</th>
-            <th>Количество</th>
-            <th>Сумма</th>
-            <th>Средняя цена</th>
-            <th>Средняя сумма</th>
-            <th>Изменение</th>
-        </tr>
-        <tr th:each="sell : ${sells}">
-            <td th:text="${sell.date}"></td>
-            <td th:text="${sell.ticker}"></td>
-            <td th:text="${sell.cost}"></td>
-            <td th:text="${sell.count}"></td>
-            <td th:text="${sell.sum}"></td>
-            <td th:text="${sell.averageCost}"></td>
-            <td th:text="${sell.averageSum}"></td>
-            <td th:text="${sell.Change}"></td>
-        </tr>
-    </table>
+<div id="main">
+    <script th:inline="javascript">
+        let error = [[${error}]];
+        if (error) {
+            alert(error);
+        }
+    </script>
+    <div th:if="${ not#lists.isEmpty(sells)}" id="table-container">
+        <table class="table" id="table">
+            <tr>
+                <th>Дата</th>
+                <th>Тикер</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+                <th>Средняя цена</th>
+                <th>Средняя сумма</th>
+                <th>Изменение</th>
+            </tr>
+            <tr th:each="sell : ${sells}">
+                <td th:text="${sell.date}"></td>
+                <td th:text="${sell.ticker}"></td>
+                <td th:text="${sell.cost}"></td>
+                <td th:text="${sell.count}"></td>
+                <td th:text="${sell.sum}"></td>
+                <td th:text="${sell.averageCost}"></td>
+                <td th:text="${sell.averageSum}"></td>
+                <td th:text="${sell.Change}"></td>
+            </tr>
+        </table>
+        <div id="btn_container">
+            <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
+            <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
+        </div>
+        <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
+    </div>
+    <div th:unless="${ not#lists.isEmpty(sells)}">Пока здесь ничего нет</div>
+    <form action="#" th:action="@{/Accounting/Sell}" th:object="${sellRequest}" method="post" id="form">
+        <h2>ПРОДАЖИ</h2>
+        <p type="Дата">
+            <input type="date" th:field="*{date}" required>
+        </p>
+        <p type="Тикер">
+            <input type="text" th:field="*{ticker}" required placeholder="Введите тикер...">
+        </p>
+        <p type="Цена">
+            <input type="text" th:field="*{cost}" required placeholder="Введите цену...">
+        </p>
+        <p type="Количесвто">
+            <input type="text" th:field="*{count}" required placeholder="Введите количество...">
+        </p>
+        <input type="submit" value="Добавить" class="cstm-btn btn"/>
+    </form>
 </div>
-<div th:unless="${ not#lists.isEmpty(sells)}">Пока здесь ничего нет</div>
-<form action="#" th:action="@{/Accounting/Sell}" th:object="${sellRequest}" method="post">
-    <label>
-        Дата
-        <input type="date" th:field="*{date}">
-    </label></br>
-    <label>
-        Тикер
-        <input type="text" th:field="*{ticker}">
-    </label></br>
-    <label>
-        Цена
-        <input type="text" th:field="*{cost}">
-    </label></br>
-    <label>
-        Количество
-        <input type="text" th:field="*{count}">
-    </label></br>
-    <input type="submit" value="Добавить"/>
-</form>
-</br>
-<a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}">Назад</a>
 </body>
 </html>
