@@ -5,6 +5,7 @@
     flex-direction: column;
     align-content: space-evenly;
     align-items: center;
+    margin: 10px;
 }
 
 h2 {

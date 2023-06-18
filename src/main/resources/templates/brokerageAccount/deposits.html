@@ -5,6 +5,9 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{../table.css}">
     <link rel="stylesheet" th:href="@{../header.css}">
+    <link rel="stylesheet" th:href="@{../tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{../form.css}">
+    <link rel="stylesheet" th:href="@{../buttons.css}">
 </head>
 <body>
 <div class="header">
@@ -17,38 +20,36 @@
         <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
     </div>
 </div>
-</br>
-<script th:inline="javascript">
-    let error = [[${error}]];
-    if (error) {
-        alert(error);
-    }
-</script>
-<div th:if="${ not#lists.isEmpty(deposits)}">
-    <table class="table">
-        <tr>
-            <th>Дата</th>
-            <th>Сумма</th>
-        </tr>
-        <tr th:each="deposit : ${deposits}">
-            <td th:text="${deposit.date}"></td>
-            <td th:text="${deposit.sum}"></td>
-        </tr>
-    </table>
+<div id="main">
+    <script th:inline="javascript">
+        let error = [[${error}]];
+        if (error) {
+            alert(error);
+        }
+    </script>
+    <div th:if="${ not#lists.isEmpty(deposits)}">
+        <table class="table">
+            <tr>
+                <th>Дата</th>
+                <th>Сумма</th>
+            </tr>
+            <tr th:each="deposit : ${deposits}">
+                <td th:text="${deposit.date}"></td>
+                <td th:text="${deposit.sum}"></td>
+            </tr>
+        </table>
+    </div>
+    <div th:unless="${ not#lists.isEmpty(deposits)}">Пока здесь ничего нет</div>
+    <form action="#" th:action="@{/Accounting/Deposit}" th:object="${depositRequest}" method="post" id="form">
+        <h2>ДОБАВИТЬ ПОПОЛНЕНИЕ</h2>
+        <p type="Дата">
+            <input type="date" th:field="*{date}" required>
+        </p>
+        <p type="Сумма">
+            <input type="text" th:field="*{sum}" required>
+        </p>
+        <input type="submit" value="Добавить" class="cstm-btn btn"/>
+    </form>
 </div>
-<div th:unless="${ not#lists.isEmpty(deposits)}">Пока здесь ничего нет</div>
-<form action="#" th:action="@{/Accounting/Deposit}" th:object="${depositRequest}" method="post">
-    <label>
-        Дата
-        <input type="date" th:field="*{date}">
-    </label></br>
-    <label>
-        Сумма
-        <input type="text" th:field="*{sum}">
-    </label></br>
-    <input type="submit" value="Добавить"/>
-</form>
-</br>
-<a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}">Назад</a>
 </body>
 </html>
