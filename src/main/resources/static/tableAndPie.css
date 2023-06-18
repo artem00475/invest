@@ -21,3 +21,15 @@ h2 {
     justify-items: center;
     align-items: center;
 }
+
+#table-container a {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+#table-container a:hover {
+    border-bottom: 3px solid rgb(96,9,240); /* добавляем нижнюю границу */
+    padding-bottom: 1px; /* делаем небольшое расстояние между текстом и границей */
+}
+
