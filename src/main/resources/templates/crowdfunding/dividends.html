@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${instrumentName}"></title>
+    <link rel="stylesheet" th:href="@{../table.css}">
+    <link rel="stylesheet" th:href="@{../header.css}">
+</head>
+<body>
+<div class="header">
+    <a href="#default" class="logo">Выплаты</a>
+    <div class="header-right">
+        <a class="active" href="/">Портфель</a>
+        <a th:href="@{/Crowdfunding?instrumentName={name}(name=${instrumentName})}" th:text="${instrumentName}"></a>
+        <a th:href="@{/Crowdfunding/Deposit?instrumentName={name}(name=${instrumentName})}">Поплонить</a>
+    </div>
+</div>
+</br>
+<script th:inline="javascript">
+    let error = [[${error}]];
+    if (error) {
+        alert(error);
+    }
+</script>
+<div th:if="${ not#lists.isEmpty(dividends)}">
+    <table class="table">
+        <tr>
+            <th>Дата</th>
+            <th>Сумма</th>
+        </tr>
+        <tr th:each="dividend : ${dividends}">
+            <td th:text="${dividend.date}"></td>
+            <td th:text="${dividend.sum}"></td>
+        </tr>
+    </table>
+</div>
+<div th:unless="${ not#lists.isEmpty(dividends)}">Пока здесь ничего нет</div>
+<form action="#" th:action="@{/Crowdfunding/Dividends}" th:object="${dividendsRequest}" method="post">
+    <label>
+        Дата
+        <input type="date" th:field="*{date}">
+    </label></br>
+    <label>
+        Цена
+        <input type="text" th:field="*{cost}">
+    </label></br>
+    <input type="submit" value="Добавить"/>
+</form>
+</br>
+<a th:href="@{/Crowdfunding?instrumentName={name}(name=${instrumentName})}">Назад</a>
+</body>
+</html>

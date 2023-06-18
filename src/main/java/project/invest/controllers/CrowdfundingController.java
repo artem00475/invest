@@ -3,13 +3,20 @@ package project.invest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import project.invest.controllers.requests.CrowdfundingRequest;
 import project.invest.controllers.requests.DepositRequest;
+import project.invest.controllers.requests.DividendsRequest;
 import project.invest.jpa.entities.Deposit;
+import project.invest.jpa.entities.Dividends;
+import project.invest.jpa.entities.PaperTypeEnum;
 import project.invest.jpa.entities.SummaryEntity;
 import project.invest.services.CrowdfundingService;
 import project.invest.services.DepositService;
+import project.invest.services.DividendsService;
 
 import java.text.DecimalFormat;
 
@@ -23,9 +30,13 @@ public class CrowdfundingController {
     @Autowired
     private final DepositService depositService;
 
-    public CrowdfundingController(CrowdfundingService crowdfundingService, DepositService depositService) {
+    @Autowired
+    private final DividendsService dividendsService;
+
+    public CrowdfundingController(CrowdfundingService crowdfundingService, DepositService depositService, DividendsService dividendsService) {
         this.crowdfundingService = crowdfundingService;
         this.depositService = depositService;
+        this.dividendsService = dividendsService;
     }
 
     @GetMapping("/Crowdfunding")
@@ -83,5 +94,34 @@ public class CrowdfundingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("deposits", depositService.getDeposits(instrumentName));
         return "crowdfunding/deposit";
+    }
+
+    @GetMapping("/Crowdfunding/Dividends")
+    public String getDividends(@RequestParam String instrumentName, Model model) {
+        this.instrumentName = instrumentName;
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("dividendsRequest", new DividendsRequest());
+        return "crowdfunding/dividends";
+    }
+
+    @PostMapping("/Crowdfunding/Dividends")
+    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model) {
+            try {
+                Dividends dividends = new Dividends();
+                dividends.setCost(Float.parseFloat(dividendsRequest.getCost()));
+                dividends.setCount(1);
+                dividends.setInstrumentName(instrumentName);
+                dividends.setDate(dividendsRequest.getDate());
+                dividends.setSum(dividends.getCost()* dividends.getCount());
+                dividendsService.addDividends(dividends);
+                System.out.println("Added");
+            } catch (NumberFormatException e) {
+                System.out.println("Error");
+                model.addAttribute("error", "Некорректные значения");
+            }
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        return "crowdfunding/dividends";
     }
 }
