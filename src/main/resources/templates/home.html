@@ -5,6 +5,10 @@
     <title>Портфель</title>
     <link rel="stylesheet" th:href="@{table.css}">
     <link rel="stylesheet" th:href="@{header.css}">
+    <link rel="stylesheet" th:href="@{pieChart.css}">
+    <link rel="stylesheet" th:href="@{tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{form.css}">
+    <link rel="stylesheet" th:href="@{buttons.css}">
     <link rel="script" th:href="@{fetchCost.js}">
 </head>
 <body>
@@ -13,55 +17,62 @@
 </div>
 </br>
 <div th:switch="${ifUpdated}">
-    <div th:case="1">
+    <div th:case="1" id="main">
         <script type="text/javascript">
             history.pushState(null, null, "http://localhost:8080/");
         </script>
         <h2 th:text="${'Всего: '+total}"></h2>
         </br>
         <div th:if="${ not#lists.isEmpty(summary)}">
-            <table class="table">
-                <tr>
-                    <th>Название</th>
-                    <th>Сумма</th>
-                    <th>Изменение</th>
-                    <th>Изменение в %</th>
-                    <th>% в портфеле</th>
-                    <th>Инвестировано</th>
-                    <th>Изменение от пополнения</th>
-                </tr>
-                <tr th:each="sum : ${summary}">
-                    <td th:switch="${sum.instrumentTypeEnum}">
-                        <a th:case="${T(project.invest.jpa.entities.InstrumentTypeEnum).brokerageAccount}" th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}"
-                           th:text="${sum.instrumentName}"></a>
-                        <a th:case="${T(project.invest.jpa.entities.InstrumentTypeEnum).crowdfunding}" th:href="@{/Crowdfunding?instrumentName={name}(name=${sum.instrumentName})}"
-                           th:text="${sum.instrumentName}"></a>
-                    </td>
-                    <td th:text="${sum.sum}"></td>
-                    <td th:text="${sum.change}"></td>
-                    <td th:text="${sum.changeInPercents}"></td>
-                    <td th:text="${sum.percentFromAll}"></td>
-                    <td th:text="${sum.invested}"></td>
-                    <td th:text="${sum.changeFromInvested}"></td>
-                </tr>
-            </table>
+            <div id="table-container">
+                <table class="table">
+                    <tr>
+                        <th>Название</th>
+                        <th>Сумма</th>
+                        <th>Изменение</th>
+                        <th>Изменение в %</th>
+                        <th>% в портфеле</th>
+                        <th>Инвестировано</th>
+                        <th>Изменение от пополнения</th>
+                    </tr>
+                    <tr th:each="sum : ${summary}">
+                        <td th:switch="${sum.instrumentTypeEnum}">
+                            <a th:case="${T(project.invest.jpa.entities.InstrumentTypeEnum).brokerageAccount}" th:href="@{/Accounting?instrumentName={name}(name=${sum.instrumentName})}"
+                               th:text="${sum.instrumentName}"></a>
+                            <a th:case="${T(project.invest.jpa.entities.InstrumentTypeEnum).crowdfunding}" th:href="@{/Crowdfunding?instrumentName={name}(name=${sum.instrumentName})}"
+                               th:text="${sum.instrumentName}"></a>
+                        </td>
+                        <td th:text="${sum.sum}"></td>
+                        <td th:text="${sum.change}"></td>
+                        <td th:text="${sum.changeInPercents}"></td>
+                        <td th:text="${sum.percentFromAll}"></td>
+                        <td th:text="${sum.invested}"></td>
+                        <td th:text="${sum.changeFromInvested}"></td>
+                    </tr>
+                </table>
+                <button value="Обновить цены" onclick="window.location.href='http://localhost:8080/update'" class="btn cstm-btn">Обновить цены</button>
+            </div>
         </div>
         <div th:unless="${ not#lists.isEmpty(summary)}">Здесь пока ничего нет</div>
-        <form action="#" th:action="@{/}" th:object="${summaryRequest}" method="post">
-            <label>
-                Название инструмента
-                <input type="text" th:field="*{instrumentName}">
-            </label></br>
-            <label>
-                Тип инструмента
+        <div id="my-pie-chart-container">
+            <div id="my-pie-chart"></div>
+            <div id="legenda"></div>
+        </div>
+        <script type="text/javascript" th:src="@{homePieChart.js}" src="static/homePieChart.js"></script>
+        <script th:inline="javascript">
+            homePieChart([[${summary}]]);
+        </script>
+        <form action="#" th:action="@{/}" th:object="${summaryRequest}" method="post" id="form">
+            <h2>ДОБАВИТЬ ИНСТРУМЕНТ</h2>
+            <p type="Название инструмента"><input type="text" th:field="*{instrumentName}" placeholder="Введите название инструмента..." required></p>
+            <p type="Тип инструмента">
                 <select th:field="*{type}">
                     <option th:each="value : ${T(project.invest.jpa.entities.InstrumentTypeEnum).values()}"
                             th:value="${value.displayValue}" th:text="${value.displayValue}"></option>
                 </select>
-            </label></br>
-            <input type="submit" value="Добавить"/>
+            </p>
+            <input type="submit" value="Добавить" class="btn cstm-btn"/>
         </form>
-        <button value="Обновить цены" onclick="window.location.href='http://localhost:8080/update'">Обновить цены</button>
     </div>
     <div th:case="0">
         <h1>Loading...</h1>
