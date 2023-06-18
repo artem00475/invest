@@ -28,7 +28,7 @@
         }
     </script>
     </br>
-    <div th:if="${ not#lists.isEmpty(deposits)}">
+    <div th:if="${ not#lists.isEmpty(deposits)}" id="table-container">
         <table class="table" id="table">
             <tr>
                 <th>Дата</th>
@@ -52,7 +52,7 @@
             <input type="date" th:field="*{date}" required>
         </p>
         <p type="Сумма">
-            <input type="text" th:field="*{sum}" required>
+            <input type="text" th:field="*{sum}" required placeholder="Введите сумму...">
         </p>
         <input type="submit" value="Добавить" class="cstm-btn btn"/>
     </form>

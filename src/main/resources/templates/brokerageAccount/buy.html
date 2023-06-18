@@ -5,6 +5,9 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{../table.css}">
     <link rel="stylesheet" th:href="@{../header.css}">
+    <link rel="stylesheet" th:href="@{../tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{../form.css}">
+    <link rel="stylesheet" th:href="@{../buttons.css}">
 </head>
 <body>
 <div class="header">
@@ -18,52 +21,53 @@
     </div>
 </div>
 </br>
-<div th:if="${ not#lists.isEmpty(buys)}">
-    <table class="table">
-        <tr>
-            <th>Дата</th>
-            <th>Тикер</th>
-            <th>Цена</th>
-            <th>Количество</th>
-            <th>Сумма</th>
-        </tr>
-        <tr th:each="buy : ${buys}">
-            <td th:text="${buy.date}"></td>
-            <td th:text="${buy.ticker}"></td>
-            <td th:text="${buy.cost}"></td>
-            <td th:text="${buy.count}"></td>
-            <td th:text="${buy.sum}"></td>
-        </tr>
-    </table>
+<div id="main">
+    <div th:if="${ not#lists.isEmpty(buys)}" id="table-container">
+        <table class="table" id="table">
+            <tr>
+                <th>Дата</th>
+                <th>Тикер</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+            </tr>
+            <tr th:each="buy : ${buys}">
+                <td th:text="${buy.date}"></td>
+                <td th:text="${buy.ticker}"></td>
+                <td th:text="${buy.cost}"></td>
+                <td th:text="${buy.count}"></td>
+                <td th:text="${buy.sum}"></td>
+            </tr>
+        </table>
+        <div id="btn_container">
+            <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
+            <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
+        </div>
+        <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
+    </div>
+    <div th:unless="${ not#lists.isEmpty(buys)}">Пока здесь ничего нет</div>
+    <form action="#" th:action="@{/Accounting/Buy}" th:object="${buyRequest}" method="post" id="form">
+        <h2>ПОКУПКА</h2>
+        <p type="Дата">
+            <input type="date" th:field="*{date}" required>
+        </p>
+        <p type="Тикер">
+            <input type="text" th:field="*{ticker}" required placeholder="Введите тикер...">
+        </p>
+        <p type="Цена">
+            <input type="text" th:field="*{cost}" required placeholder="Введите цену...">
+        </p>
+        <p type="Количесвто">
+            <input type="text" th:field="*{count}" required placeholder="Введите количество...">
+        </p>
+        <p type="Тип бумаги">
+            <select th:field="*{type}">
+                <option th:each="value : ${T(project.invest.jpa.entities.PaperTypeEnum).values()}"
+                        th:value="${value.displayValue}" th:text="${value.displayValue}"></option>
+            </select>
+        </p>
+        <input type="submit" value="Добавить" class="cstm-btn btn"/>
+    </form>
 </div>
-<div th:unless="${ not#lists.isEmpty(buys)}">Пока здесь ничего нет</div>
-<form action="#" th:action="@{/Accounting/Buy}" th:object="${buyRequest}" method="post">
-    <label>
-        Дата
-        <input type="date" th:field="*{date}">
-    </label></br>
-    <label>
-        Тикер
-        <input type="text" th:field="*{ticker}">
-    </label></br>
-    <label>
-        Цена
-        <input type="text" th:field="*{cost}">
-    </label></br>
-    <label>
-        Количество
-        <input type="text" th:field="*{count}">
-    </label></br>
-    <label>
-        Тип бумаги
-        <select th:field="*{type}">
-            <option th:each="value : ${T(project.invest.jpa.entities.PaperTypeEnum).values()}"
-                    th:value="${value.displayValue}" th:text="${value.displayValue}"></option>
-        </select>
-    </label>
-    <input type="submit" value="Добавить"/>
-</form>
-</br>
-<a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}">Назад</a>
 </body>
 </html>
