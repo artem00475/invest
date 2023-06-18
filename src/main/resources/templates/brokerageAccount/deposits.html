@@ -27,6 +27,7 @@
             alert(error);
         }
     </script>
+    </br>
     <div th:if="${ not#lists.isEmpty(deposits)}">
         <table class="table" id="table">
             <tr>
@@ -39,8 +40,8 @@
             </tr>
         </table>
         <div id="btn_container">
-            <button id="back" onclick="back10()">Назад</button>
-            <button id="next" onclick="next10()">Вперед</button>
+            <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
+            <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
         </div>
         <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
     </div>
