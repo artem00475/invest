@@ -16,4 +16,6 @@ public class CrowdfundingService {
     }
 
     public SummaryEntity getSummary(String instrumentName) {return summaryRepository.findByInstrumentName(instrumentName);}
+
+    public void update(SummaryEntity summaryEntity) {summaryRepository.save(summaryEntity);}
 }

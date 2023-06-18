@@ -155,7 +155,7 @@ public class AccountService {
             el.setName(paper.getName());
         });
         accountRepository.saveAll(accounts);
-        List<SummaryEntity> summaryEntities = summaryService.getAllByUserName("Artem");
+        List<SummaryEntity> summaryEntities = summaryService.getAllByUserNameAndType("Artem", InstrumentTypeEnum.brokerageAccount);
         summaryEntities.forEach(el -> {
             updateSummary(el.getInstrumentName());
         });

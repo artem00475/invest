@@ -3,15 +3,15 @@ package project.invest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import project.invest.controllers.requests.CrowdfundingRequest;
 import project.invest.controllers.requests.DepositRequest;
 import project.invest.jpa.entities.Deposit;
 import project.invest.jpa.entities.SummaryEntity;
 import project.invest.services.CrowdfundingService;
 import project.invest.services.DepositService;
+
+import java.text.DecimalFormat;
 
 @Controller
 public class CrowdfundingController {
@@ -35,6 +35,27 @@ public class CrowdfundingController {
         SummaryEntity summaryEntity = crowdfundingService.getSummary(instrumentName);
         model.addAttribute("sum", summaryEntity.getSum() - summaryEntity.getBalance());
         model.addAttribute("balance", summaryEntity.getBalance());
+        model.addAttribute("crowdfundingRequest", new CrowdfundingRequest());
+        return "crowdfunding/crowdfunding";
+    }
+
+    @PostMapping("/Crowdfunding")
+    public String updateAccount(@ModelAttribute CrowdfundingRequest crowdfundingRequest, Model model) {
+        try {
+            SummaryEntity summaryEntity = crowdfundingService.getSummary(instrumentName);
+            summaryEntity.setBalance(Float.parseFloat(crowdfundingRequest.getBalance()));
+            summaryEntity.setSum(Float.parseFloat(crowdfundingRequest.getSum())+summaryEntity.getBalance());
+            summaryEntity.setChange(summaryEntity.getSum()-summaryEntity.getResult());
+            summaryEntity.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(summaryEntity.getChange()/summaryEntity.getResult()*100).replace(',','.')));
+            crowdfundingService.update(summaryEntity);
+            model.addAttribute("sum", summaryEntity.getSum() - summaryEntity.getBalance());
+            model.addAttribute("balance", summaryEntity.getBalance());
+            model.addAttribute("crowdfundingRequest", new CrowdfundingRequest());
+        } catch (NumberFormatException e) {
+            System.out.println("Error");
+            model.addAttribute("error", "Некорректные значения");
+        }
+        model.addAttribute("instrumentName", instrumentName);
         return "crowdfunding/crowdfunding";
     }
 

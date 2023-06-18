@@ -20,5 +20,17 @@
 <h2 th:text="${'Баланс: '+balance}"></h2>
 <h2 th:text="${'В займах: '+sum}"></h2>
 </br>
+<form action="#" th:action="@{/Crowdfunding}" th:object="${crowdfundingRequest}" method="post">
+    <label>
+        Баланс
+        <input type="text" th:field="*{balance}">
+    </label></br>
+    <label>
+        В займах
+        <input type="text" th:field="*{sum}">
+    </label></br>
+    <input type="submit" value="Добавить"/>
+</form>
+</br>
 </body>
 </html>

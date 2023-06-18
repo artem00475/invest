@@ -2,6 +2,7 @@ package project.invest.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project.invest.jpa.entities.InstrumentTypeEnum;
 import project.invest.jpa.entities.SummaryEntity;
 import project.invest.jpa.repositories.SummaryRepository;
 
@@ -21,6 +22,7 @@ public class SummaryService {
     public void addToSummery(SummaryEntity summaryEntity) {summaryRepository.save(summaryEntity);}
 
     public List<SummaryEntity> getAllByUserName(String user) {return summaryRepository.findAllByUserName(user);}
+    public List<SummaryEntity> getAllByUserNameAndType(String user, InstrumentTypeEnum instrumentTypeEnum) {return summaryRepository.findAllByUserNameAndInstrumentTypeEnum(user, instrumentTypeEnum);}
 
     public boolean checkInstrument(String instrumentName) {return summaryRepository.findByInstrumentName(instrumentName)==null;}
 
