@@ -28,7 +28,7 @@
         }
     </script>
     <div th:if="${ not#lists.isEmpty(deposits)}">
-        <table class="table">
+        <table class="table" id="table">
             <tr>
                 <th>Дата</th>
                 <th>Сумма</th>
@@ -38,6 +38,11 @@
                 <td th:text="${deposit.sum}"></td>
             </tr>
         </table>
+        <div id="btn_container">
+            <button id="back" onclick="back10()">Назад</button>
+            <button id="next" onclick="next10()">Вперед</button>
+        </div>
+        <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
     </div>
     <div th:unless="${ not#lists.isEmpty(deposits)}">Пока здесь ничего нет</div>
     <form action="#" th:action="@{/Accounting/Deposit}" th:object="${depositRequest}" method="post" id="form">
