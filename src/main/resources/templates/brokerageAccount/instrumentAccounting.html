@@ -5,6 +5,8 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{table.css}">
     <link rel="stylesheet" th:href="@{header.css}">
+    <link rel="stylesheet" th:href="@{tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{pieChart.css}">
 </head>
 <body>
 <div class="header">
@@ -18,35 +20,43 @@
         <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
     </div>
 </div>
-</br>
-<h2 th:text="${'Баланс: '+balance}"></h2>
-</br>
-<div th:if="${ not#lists.isEmpty(accounts)}">
-    <table class="table">
-        <tr>
-            <th>Название</th>
-            <th>Текущая цена</th>
-            <th>Количество</th>
-            <th>Текущая сумма</th>
-            <th>Текущая доля</th>
-            <th>Средняя цена</th>
-            <th>Изменение</th>
-            <th>Изменение в %</th>
-            <th>Дивиденды</th>
-        </tr>
-        <tr th:each="account : ${accounts}">
-            <td th:text="${account.name}"></td>
-            <td th:text="${account.currentCost}"></td>
-            <td th:text="${account.count}"></td>
-            <td th:text="${account.count*account.currentCost}"></td>
-            <td th:text="${account.currentShare}"></td>
-            <td th:text="${account.averageCost}"></td>
-            <td th:text="${account.change}"></td>
-            <td th:text="${account.changeInPercents}"></td>
-            <td th:text="${account.dividends}"></td>
-        </tr>
-    </table>
+<div id="main">
+    <h2 th:text="${'Баланс: '+balance}"></h2>
+    <div th:if="${ not#lists.isEmpty(accounts)}">
+        <table class="table">
+            <tr>
+                <th>Название</th>
+                <th>Текущая цена</th>
+                <th>Количество</th>
+                <th>Текущая сумма</th>
+                <th>Текущая доля</th>
+                <th>Средняя цена</th>
+                <th>Изменение</th>
+                <th>Изменение в %</th>
+                <th>Дивиденды</th>
+            </tr>
+            <tr th:each="account : ${accounts}">
+                <td th:text="${account.name}"></td>
+                <td th:text="${account.currentCost}"></td>
+                <td th:text="${account.count}"></td>
+                <td th:text="${account.count*account.currentCost}"></td>
+                <td th:text="${account.currentShare}"></td>
+                <td th:text="${account.averageCost}"></td>
+                <td th:text="${account.change}"></td>
+                <td th:text="${account.changeInPercents}"></td>
+                <td th:text="${account.dividends}"></td>
+            </tr>
+        </table>
+    </div>
+    <div th:unless="${ not#lists.isEmpty(accounts)}">Пока здесь ничего нет</div>
+    <div id="my-pie-chart-container">
+        <div id="my-pie-chart"></div>
+        <div id="legenda"></div>
+    </div>
+    <script type="text/javascript" th:src="@{homePieChart.js}" src="static/homePieChart.js"></script>
+    <script th:inline="javascript">
+        homePieChart1([[${accounts}]]);
+    </script>
 </div>
-<div th:unless="${ not#lists.isEmpty(accounts)}">Пока здесь ничего нет</div>
 </body>
 </html>
