@@ -29,6 +29,7 @@
         }
     </script>
     <div th:if="${ not#lists.isEmpty(dividends)}" id="table-container">
+        <div id="table-div">
         <table class="table" id="table">
             <tr>
                 <th>Дата</th>
@@ -47,6 +48,8 @@
                 <td th:text="${dividend.tax}"></td>
             </tr>
         </table>
+        </div>
+        <div id="page-pointer"></div>
         <div id="btn_container">
             <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
             <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>

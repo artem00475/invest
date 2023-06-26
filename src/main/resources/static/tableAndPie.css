@@ -20,6 +20,7 @@ h2 {
     flex-direction: column;
     justify-items: center;
     align-items: center;
+    justify-content: center;
 }
 
 #table-container a {

@@ -44,3 +44,31 @@
 .table tbody tr:last-child td:last-child {
     border-radius: 0 0 20px 0;
 }
+
+.point {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #78788c;
+}
+
+.current_page {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgb(96,9,240);
+    background: linear-gradient(0deg, rgba(96,9,240,1) 0%, rgba(129,5,240,1) 100%);
+}
+
+#page-pointer {
+    width: 50%;
+    display: flex;
+    margin: 10px;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#table-div {
+    height: 410px;
+}
