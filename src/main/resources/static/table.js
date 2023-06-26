@@ -10,9 +10,12 @@ document.getElementById('table-div').style.width=th.length*100 + 'px';
 let page_number = 0;
 let begin = 0;
 let end = 10;
+let last = 0;
 if (rows.length>10) {
 // скроем все строки после 10
     rows.forEach((e, i) => e.style.display = i > 9 ? 'none' : 'table-row');
+    last = 9;
+    rows[last].id='last-row';
     back.disabled = true;
     const pages = Math.ceil(rows.length/10);
     pointer.style.width=(pages+1)*20 + 'px';
@@ -35,11 +38,16 @@ function next10() {
     pointer.children.item(page_number).className = 'current_page';
     if (end >= rows.length) next.disabled=true;
     // перебираем все строки
+    rows[last].id='';
     rows.forEach((el, i) => {
         // если строка не видна и счетчик меньше 10
-        if (i >= begin && i<end) el.style.display = 'table-row';
+        if (i >= begin && i<end) {
+            el.style.display = 'table-row';
+            last = i;
+        }
         else el.style.display = 'none';
     })
+    rows[last].id='last-row';
 }
 
 function back10() {
@@ -51,9 +59,14 @@ function back10() {
     pointer.children.item(page_number).className = 'current_page';
     if (begin === 0) back.disabled=true;
     // перебираем все строки
+    rows[last].id='';
     rows.forEach((el, i) => {
         // если строка не видна и счетчик меньше 10
-        if (i >= begin && i<end) el.style.display = 'table-row';
+        if (i >= begin && i<end) {
+            el.style.display = 'table-row';
+            last = i;
+        }
         else el.style.display = 'none';
     })
+    rows[last].id='last-row';
 }
