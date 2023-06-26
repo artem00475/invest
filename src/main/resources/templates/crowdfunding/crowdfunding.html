@@ -5,6 +5,10 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{table.css}">
     <link rel="stylesheet" th:href="@{header.css}">
+    <link rel="stylesheet" th:href="@{tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{pieChart.css}">
+    <link rel="stylesheet" th:href="@{form.css}">
+    <link rel="stylesheet" th:href="@{buttons.css}">
 </head>
 <body>
 <div class="header">
@@ -16,21 +20,20 @@
         <a th:href="@{/Crowdfunding/Dividends?instrumentName={name}(name=${instrumentName})}">Выплаты</a>
     </div>
 </div>
-</br>
+<div id="main">
 <h2 th:text="${'Баланс: '+balance}"></h2>
 <h2 th:text="${'В займах: '+sum}"></h2>
 </br>
-<form action="#" th:action="@{/Crowdfunding}" th:object="${crowdfundingRequest}" method="post">
-    <label>
-        Баланс
-        <input type="text" th:field="*{balance}">
-    </label></br>
-    <label>
-        В займах
-        <input type="text" th:field="*{sum}">
-    </label></br>
-    <input type="submit" value="Добавить"/>
+<form action="#" th:action="@{/Crowdfunding}" th:object="${crowdfundingRequest}" method="post" id="form">
+    <h2>ОБНОВЛЕНИЕ ПОРТФЕЛЯ</h2>
+    <p type="Баланс">
+        <input type="text" th:field="*{balance}" required placeholder="Введите баланс...">
+    </p>
+    <p type="В займах">
+        <input type="text" th:field="*{sum}" required placeholder="Введиту сумму в займах...">
+    </p>
+    <input type="submit" value="Изменить" class="btn cstm-btn"/>
 </form>
-</br>
+</div>
 </body>
 </html>
