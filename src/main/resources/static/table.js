@@ -13,6 +13,7 @@ let end = 10;
 let last = 0;
 if (rows.length>10) {
 // скроем все строки после 10
+    document.getElementById('table-div').style.height='410px';
     rows.forEach((e, i) => e.style.display = i > 9 ? 'none' : 'table-row');
     last = 9;
     rows[last].id='last-row';

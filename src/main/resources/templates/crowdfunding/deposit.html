@@ -5,6 +5,9 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{../table.css}">
     <link rel="stylesheet" th:href="@{../header.css}">
+    <link rel="stylesheet" th:href="@{../tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{../form.css}">
+    <link rel="stylesheet" th:href="@{../buttons.css}">
 </head>
 <body>
 <div class="header">
@@ -15,38 +18,45 @@
         <a th:href="@{/Crowdfunding/Dividends?instrumentName={name}(name=${instrumentName})}">Выплаты</a>
     </div>
 </div>
-</br>
-<script th:inline="javascript">
-    let error = [[${error}]];
-    if (error) {
-        alert(error);
-    }
-</script>
-<div th:if="${ not#lists.isEmpty(deposits)}">
-    <table class="table">
-        <tr>
-            <th>Дата</th>
-            <th>Сумма</th>
-        </tr>
-        <tr th:each="deposit : ${deposits}">
-            <td th:text="${deposit.date}"></td>
-            <td th:text="${deposit.sum}"></td>
-        </tr>
-    </table>
+<div id="main">
+    <script th:inline="javascript">
+        let error = [[${error}]];
+        if (error) {
+            alert(error);
+        }
+    </script>
+    </br>
+    <div th:if="${ not#lists.isEmpty(deposits)}" id="table-container">
+        <div id="table-div">
+            <table class="table" id="table">
+                <tr>
+                    <th>Дата</th>
+                    <th>Сумма</th>
+                </tr>
+                <tr th:each="deposit : ${deposits}">
+                    <td th:text="${deposit.date}"></td>
+                    <td th:text="${deposit.sum}"></td>
+                </tr>
+            </table>
+        </div>
+        <div id="page-pointer"></div>
+        <div id="btn_container">
+            <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
+            <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
+        </div>
+        <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
+    </div>
+    <div th:unless="${ not#lists.isEmpty(deposits)}">Пока здесь ничего нет</div>
+    <form action="#" th:action="@{/Crowdfunding/Deposit}" th:object="${depositRequest}" method="post" id="form">
+        <h2>ДОБАВИТЬ ПОПОЛНЕНИЕ</h2>
+        <p type="Дата">
+            <input type="date" th:field="*{date}" required>
+        </p>
+        <p type="Сумма">
+            <input type="text" th:field="*{sum}" required placeholder="Введите сумму...">
+        </p>
+        <input type="submit" value="Добавить" class="cstm-btn btn"/>
+    </form>
 </div>
-<div th:unless="${ not#lists.isEmpty(deposits)}">Пока здесь ничего нет</div>
-<form action="#" th:action="@{/Crowdfunding/Deposit}" th:object="${depositRequest}" method="post">
-    <label>
-        Дата
-        <input type="date" th:field="*{date}">
-    </label></br>
-    <label>
-        Сумма
-        <input type="text" th:field="*{sum}">
-    </label></br>
-    <input type="submit" value="Добавить"/>
-</form>
-</br>
-<a th:href="@{/Crowdfunding?instrumentName={name}(name=${instrumentName})}">Назад</a>
 </body>
 </html>
