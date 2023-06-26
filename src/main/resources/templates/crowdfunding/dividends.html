@@ -5,6 +5,9 @@
     <title th:text="${instrumentName}"></title>
     <link rel="stylesheet" th:href="@{../table.css}">
     <link rel="stylesheet" th:href="@{../header.css}">
+    <link rel="stylesheet" th:href="@{../tableAndPie.css}">
+    <link rel="stylesheet" th:href="@{../form.css}">
+    <link rel="stylesheet" th:href="@{../buttons.css}">
 </head>
 <body>
 <div class="header">
@@ -16,14 +19,16 @@
     </div>
 </div>
 </br>
+<div id="main">
 <script th:inline="javascript">
     let error = [[${error}]];
     if (error) {
         alert(error);
     }
 </script>
-<div th:if="${ not#lists.isEmpty(dividends)}">
-    <table class="table">
+<div th:if="${ not#lists.isEmpty(dividends)}" id="table-container">
+    <div id="table-div">
+    <table class="table" id="table">
         <tr>
             <th>Дата</th>
             <th>Сумма</th>
@@ -33,20 +38,25 @@
             <td th:text="${dividend.sum}"></td>
         </tr>
     </table>
+    </div>
+    <div id="page-pointer"></div>
+    <div id="btn_container">
+        <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
+        <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
+    </div>
+    <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
 </div>
 <div th:unless="${ not#lists.isEmpty(dividends)}">Пока здесь ничего нет</div>
-<form action="#" th:action="@{/Crowdfunding/Dividends}" th:object="${dividendsRequest}" method="post">
-    <label>
-        Дата
-        <input type="date" th:field="*{date}">
-    </label></br>
-    <label>
-        Цена
-        <input type="text" th:field="*{cost}">
-    </label></br>
-    <input type="submit" value="Добавить"/>
+<form action="#" th:action="@{/Crowdfunding/Dividends}" th:object="${dividendsRequest}" method="post" id="form">
+    <h2>ВЫПЛАТЫ</h2>
+    <p type="Дата">
+        <input type="date" th:field="*{date}" required>
+    </p>
+    <p type="Цена">
+        <input type="text" th:field="*{cost}" required placeholder="Введите цену...">
+    </p>
+    <input type="submit" value="Добавить" class="cstm-btn btn"/>
 </form>
-</br>
-<a th:href="@{/Crowdfunding?instrumentName={name}(name=${instrumentName})}">Назад</a>
+</div>
 </body>
 </html>
