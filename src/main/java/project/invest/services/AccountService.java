@@ -74,6 +74,25 @@ public class AccountService {
         summaryService.addToSummery(summaryEntity);
         updateSummary(dividends.getInstrumentName());
     }
+
+    public void addAccount(Amortization amortization) {
+        Account account = accountRepository.findByInstrumentNameAndTicker(amortization.getInstrumentName(), amortization.getTicker());
+        if (account == null) {
+            account = new Account();
+            account.setInstrumentName(amortization.getInstrumentName());
+            account.setTicker(amortization.getTicker());
+            account.setDividends(amortization.getSum());
+            accountRepository.save(account);
+        } else {
+            account.setAverageCost(account.getAverageCost()-amortization.getCost());
+            accountRepository.save(account);
+        }
+        SummaryEntity summaryEntity = summaryService.getSummary(amortization.getInstrumentName());
+        summaryEntity.setBalance(summaryEntity.getBalance()+amortization.getSum());
+        summaryService.addToSummery(summaryEntity);
+        updateSummary(amortization.getInstrumentName());
+    }
+
     @Transactional
     public void addAccount(AccountSell accountSell) {
         Account account = accountRepository.findByInstrumentNameAndTicker(accountSell.getInstrumentName(), accountSell.getTicker());

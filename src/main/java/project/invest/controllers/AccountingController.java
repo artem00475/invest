@@ -29,14 +29,17 @@ public class AccountingController {
     private final DepositService depositService;
     @Autowired
     private final CommissionService commissionService;
+    @Autowired
+    private final AmortizationService amortizationService;
 
-    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService, DepositService depositService, CommissionService commissionService) {
+    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService, DepositService depositService, CommissionService commissionService, AmortizationService amortizationService) {
         this.accountBuyService = accountBuyService;
         this.accountService = accountService;
         this.dividendsService = dividendsService;
         this.sellsService = sellsService;
         this.depositService = depositService;
         this.commissionService = commissionService;
+        this.amortizationService = amortizationService;
     }
 
     @GetMapping("/Accounting")
@@ -213,5 +216,41 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
         return "brokerageAccount/commissions";
+    }
+
+    @GetMapping("/Accounting/Amortization")
+    public String getAmortizations(@RequestParam String instrumentName, Model model) {
+        this.instrumentName = instrumentName;
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName));
+        model.addAttribute("amortizationRequest", new AmortizationRequest());
+        return "brokerageAccount/amortization";
+    }
+
+    @PostMapping("/Accounting/Amortization")
+    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model) {
+        Account account = accountService.getAccount(instrumentName, amortizationRequest.getTicker());
+        if (account != null) {
+            try {
+                if (account.getCount() == Integer.parseInt(amortizationRequest.getCount())) {
+                    Amortization amortization = new Amortization();
+                    amortization.setCost(Float.parseFloat(amortizationRequest.getCost()));
+                    amortization.setCount(Integer.parseInt(amortizationRequest.getCount()));
+                    amortization.setSum(amortization.getCost() * amortization.getCount());
+                    amortization.setInstrumentName(instrumentName);
+                    amortization.setTicker(amortizationRequest.getTicker());
+                    amortization.setDate(amortizationRequest.getDate());
+                    amortizationService.addAmortization(amortization);
+                    System.out.println("Added");
+                    accountService.addAccount(amortization);
+                }else model.addAttribute("error", "Некорректное число бумаг");
+            } catch (NumberFormatException e) {
+                System.out.println("Error");
+                model.addAttribute("error", "Некорректные значения");
+            }
+        } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        return "brokerageAccount/amortization";
     }
 }
