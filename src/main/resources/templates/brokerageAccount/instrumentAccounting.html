@@ -22,15 +22,24 @@
     </div>
 </div>
 <div id="main">
-    <h2 th:text="${'Баланс: '+balance}"></h2>
+    <div id="controller">
+        <h2 th:text="${'Баланс: '+balance}"></h2>
+        <div style="display: inline-flex; justify-content: space-around; width: max-content">
+            <button class="cstm-btn btn" id="change_btn">Изменить доли</button>
+            <button class="cstm-btn btn" id="save_btn" style="display: none">Сохранить</button>
+            <button class="cstm-btn btn" id="cancel_btn" style="display: none">Отменить</button>
+        </div>
+    </div>
+
     <div th:if="${ not#lists.isEmpty(accounts)}">
-        <table class="table">
+        <table class="table" id="table">
             <tr>
                 <th>Название</th>
                 <th>Текущая цена</th>
                 <th>Количество</th>
                 <th>Текущая сумма</th>
                 <th>Текущая доля</th>
+                <th>Макс доля</th>
                 <th>Средняя цена</th>
                 <th>Изменение</th>
                 <th>Изменение в %</th>
@@ -42,6 +51,7 @@
                 <td th:text="${account.count}"></td>
                 <td th:text="${account.count*account.currentCost}"></td>
                 <td th:text="${account.currentShare}"></td>
+                <td th:text="${account.maxShare}"></td>
                 <td th:text="${account.averageCost}"></td>
                 <td th:text="${account.change}"></td>
                 <td th:text="${account.changeInPercents}"></td>
@@ -58,6 +68,7 @@
     <script th:inline="javascript">
         homePieChart1([[${accounts}]]);
     </script>
+    <script type="text/javascript" th:src="@{change_percent.js}" src="static/change_percent.js"></script>
 </div>
 </body>
 </html>

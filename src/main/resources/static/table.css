@@ -80,3 +80,9 @@
     justify-content: space-evenly;
     align-items: center;
 }
+
+#controller {
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
