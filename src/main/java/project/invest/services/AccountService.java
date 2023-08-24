@@ -187,4 +187,17 @@ public class AccountService {
     }
 
     public PaperTypeEnum getType(String ticker) {return paperRepository.findByTicker(ticker).getType();}
+
+    public void changePercent(ArrayList<String> arrayList, String instrumentName) {
+        arrayList.forEach(el -> {
+            String[] a = el.split("###");
+            Account account = accountRepository.findByInstrumentNameAndTicker(instrumentName, a[1]);
+            try {
+                account.setMaxShare(Float.parseFloat(a[0]));
+                accountRepository.save(account);
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        });
+    }
 }

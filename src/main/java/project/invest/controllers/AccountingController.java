@@ -48,6 +48,17 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("balance", accountService.getBalance(instrumentName));
+        model.addAttribute("changePercentRequest", new ChangePercentRequest());
+        return "brokerageAccount/instrumentAccounting";
+    }
+
+    @PostMapping("/Accounting")
+    public String changePercent(@ModelAttribute ChangePercentRequest changePercentRequest, Model model) {
+        model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
+        model.addAttribute("balance", accountService.getBalance(instrumentName));
+        model.addAttribute("changePercentRequest", new ChangePercentRequest());
+        accountService.changePercent(changePercentRequest.getArray(), instrumentName);
         return "brokerageAccount/instrumentAccounting";
     }
 

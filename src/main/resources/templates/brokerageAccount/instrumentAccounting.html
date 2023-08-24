@@ -58,6 +58,10 @@
                 <td th:text="${account.dividends}"></td>
             </tr>
         </table>
+        <form action="#" th:action="@{/Accounting}" th:object="${changePercentRequest}" method="post" id="form" hidden>
+            <input type="text" th:field="*{array}" id="change_percent_array">
+            <input type="submit" value="Добавить" id="change_percent_form_btn"/>
+        </form>
     </div>
     <div th:unless="${ not#lists.isEmpty(accounts)}">Пока здесь ничего нет</div>
     <div id="my-pie-chart-container">
@@ -67,6 +71,7 @@
     <script type="text/javascript" th:src="@{homePieChart.js}" src="static/homePieChart.js"></script>
     <script th:inline="javascript">
         homePieChart1([[${accounts}]]);
+        const accounts = [[${accounts}]];
     </script>
     <script type="text/javascript" th:src="@{change_percent.js}" src="static/change_percent.js"></script>
 </div>
