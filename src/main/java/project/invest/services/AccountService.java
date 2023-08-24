@@ -130,6 +130,8 @@ public class AccountService {
         sum += summaryEntity.getBalance();
         for (Account account : accounts) {
             account.setCurrentShare(Float.parseFloat(new DecimalFormat("#.#").format((account.getCurrentCost()*account.getCount())/sum*100).replace(',','.')));
+            account.setShareDifference(account.getMaxShare()-account.getCurrentShare());
+            account.setToBuy(account.getShareDifference()*0.01f*sum);
             accountRepository.save(account);
         }
         summaryEntity.setSum(sum);

@@ -40,6 +40,7 @@
                 <th>Текущая сумма</th>
                 <th>Текущая доля</th>
                 <th>Макс доля</th>
+                <th>Докупить</th>
                 <th>Средняя цена</th>
                 <th>Изменение</th>
                 <th>Изменение в %</th>
@@ -52,6 +53,7 @@
                 <td th:text="${account.count*account.currentCost}"></td>
                 <td th:text="${account.currentShare}"></td>
                 <td th:text="${account.maxShare}"></td>
+                <td th:text="${account.toBuy}"></td>
                 <td th:text="${account.averageCost}"></td>
                 <td th:text="${account.change}"></td>
                 <td th:text="${account.changeInPercents}"></td>
