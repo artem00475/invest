@@ -1,25 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${instrumentName}"></title>
-    <link rel="stylesheet" th:href="@{../table.css}">
-    <link rel="stylesheet" th:href="@{../header.css}">
-    <link rel="stylesheet" th:href="@{../tableAndPie.css}">
-    <link rel="stylesheet" th:href="@{../form.css}">
-    <link rel="stylesheet" th:href="@{../buttons.css}">
-</head>
-<body>
-<div class="header">
-    <a href="#default" class="logo">Амортизация</a>
-    <div class="header-right">
-        <a class="active" href="/">Портфель</a>
-        <a th:href="@{/Accounting?instrumentName={name}(name=${instrumentName})}" th:text="${instrumentName}"></a>
-        <a th:href="@{/Accounting/Deposit?instrumentName={name}(name=${instrumentName})}">Пополнить</a>
-        <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
-        <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
-    </div>
-</div>
+    <head th:replace="~{fragments/header}"></head>
 </br>
 <div id="main">
     <script th:inline="javascript">

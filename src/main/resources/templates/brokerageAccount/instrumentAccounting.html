@@ -1,26 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${instrumentName}"></title>
-    <link rel="stylesheet" th:href="@{table.css}">
-    <link rel="stylesheet" th:href="@{header.css}">
-    <link rel="stylesheet" th:href="@{tableAndPie.css}">
-    <link rel="stylesheet" th:href="@{pieChart.css}">
-</head>
-<body>
-<div class="header">
-    <a href="#default" class="logo" th:text="${instrumentName}"></a>
-    <div class="header-right">
-        <a class="active" href="/">Портфель</a>
-        <a th:href="@{/Accounting/Deposit?instrumentName={name}(name=${instrumentName})}">Пополнить</a>
-        <a th:href="@{/Accounting/Commission?instrumentName={name}(name=${instrumentName})}">Комиссия</a>
-        <a th:href="@{/Accounting/Buy?instrumentName={name}(name=${instrumentName})}">Покупки</a>
-        <a th:href="@{/Accounting/Dividends?instrumentName={name}(name=${instrumentName})}">Дивиденды/купоны</a>
-        <a th:href="@{/Accounting/Sell?instrumentName={name}(name=${instrumentName})}">Продажи</a>
-        <a th:href="@{/Accounting/Amortization?instrumentName={name}(name=${instrumentName})}">Амортизация</a>
-    </div>
-</div>
+<head th:replace="~{fragments/header}"></head>
 <div id="main">
     <div id="controller">
         <h2 th:text="${'Баланс: '+balance}"></h2>

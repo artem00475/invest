@@ -1,0 +1,20 @@
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${instrumentName}"></title>
+    <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'table.css' : '../table.css'">
+    <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'header.css' : '../header.css'">
+    <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'tableAndPie.css' : '../tableAndPie.css'">
+    <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'pieChart.css' : '../pieChart.css'">
+    <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'buttons.css' : '../buttons.css'">
+    <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'form.css' : '../form.css'">
+</head>
+<body>
+<div class="header" th:with="uri=${currentUri}">
+    <a href="#default" class="logo" th:text="${currentUri} == '/Accounting' ? ${instrumentName} : ${T(project.invest.jpa.entities.MenuEnum).getValueByUri(uri)}"></a>
+    <div class="header-right">
+        <a href="/">Портфель</a>
+        <a th:each="section : ${T(project.invest.jpa.entities.MenuEnum).values()}" th:text="${section.getDisplayValue()}" th:href="@{{uri}(instrumentName=${instrumentName},uri=${section.getUrl()})}"
+        th:class="${currentUri} == ${section.getUrl} ? 'active'"></a>
+    </div>
+</div>
+

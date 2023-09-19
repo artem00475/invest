@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpServletRequest;
 import project.invest.controllers.requests.*;
 import project.invest.jpa.entities.*;
 import project.invest.services.*;
@@ -43,8 +45,9 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting")
-    public String getAccounting(@RequestParam String instrumentName, Model model) {
+    public String getAccounting(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
+        model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("balance", accountService.getBalance(instrumentName));
@@ -53,7 +56,8 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting")
-    public String changePercent(@ModelAttribute ChangePercentRequest changePercentRequest, Model model) {
+    public String changePercent(@ModelAttribute ChangePercentRequest changePercentRequest, Model model, HttpServletRequest request) {
+        model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("balance", accountService.getBalance(instrumentName));
@@ -63,8 +67,9 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Buy")
-    public String getBuy(@RequestParam String instrumentName, Model model) {
+    public String getBuy(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
+        model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
         model.addAttribute("buyRequest", new BuyRequest());
@@ -72,7 +77,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Buy")
-    public String addBuy(@ModelAttribute BuyRequest buyRequest, Model model) {
+    public String addBuy(@ModelAttribute BuyRequest buyRequest, Model model, HttpServletRequest request) {
         try {
             AccountBuy accountBuy = new AccountBuy();
             accountBuy.setCost(Float.parseFloat(buyRequest.getCost()));
@@ -92,23 +97,25 @@ public class AccountingController {
         } catch (NumberFormatException e) {
             System.out.println("Error");
         }
+        model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
         return "brokerageAccount/buy";
     }
 
     @GetMapping("/Accounting/Dividends")
-    public String getDividends(@RequestParam String instrumentName, Model model) {
+    public String getDividends(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividendsRequest", new DividendsRequest());
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/dividends";
     }
 
     @PostMapping("/Accounting/Dividends")
-    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model) {
+    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model, HttpServletRequest request) {
         Account account = accountService.getAccount(instrumentName, dividendsRequest.getTicker());
         if (account != null) {
             try {
@@ -135,21 +142,23 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/dividends";
     }
 
     @GetMapping("/Accounting/Sell")
-    public String getSells(@RequestParam String instrumentName, Model model) {
+    public String getSells(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("sells", sellsService.getSells(instrumentName));
         model.addAttribute("sellRequest", new SellRequest());
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/sell";
     }
 
     @PostMapping("/Accounting/Sell")
-    public String addSells(@ModelAttribute SellRequest sellRequest, Model model) {
+    public String addSells(@ModelAttribute SellRequest sellRequest, Model model, HttpServletRequest request) {
         Account account = accountService.getAccount(instrumentName, sellRequest.getTicker());
         if (account != null) {
             try {
@@ -178,20 +187,22 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("sells", sellsService.getSells(instrumentName));
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/sell";
     }
 
     @GetMapping("/Accounting/Deposit")
-    public String getDeposits(@RequestParam String instrumentName, Model model) {
+    public String getDeposits(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("deposits", depositService.getDeposits(instrumentName));
         model.addAttribute("depositRequest", new DepositRequest());
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/deposits";
     }
 
     @PostMapping("/Accounting/Deposit")
-    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model) {
+    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model, HttpServletRequest request) {
         try {
             Deposit deposit = new Deposit();
             deposit.setDate(depositRequest.getDate());
@@ -208,16 +219,17 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Commission")
-    public String getCommissions(@RequestParam String instrumentName, Model model) {
+    public String getCommissions(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
         model.addAttribute("commissionRequest", new CommissionRequest());
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/commissions";
     }
 
     @PostMapping("/Accounting/Commission")
-    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model) {
+    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model, HttpServletRequest request) {
         try {
             Commission commission = new Commission();
             commission.setDate(commissionRequest.getDate());
@@ -230,21 +242,23 @@ public class AccountingController {
         }
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/commissions";
     }
 
     @GetMapping("/Accounting/Amortization")
-    public String getAmortizations(@RequestParam String instrumentName, Model model) {
+    public String getAmortizations(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName));
         model.addAttribute("amortizationRequest", new AmortizationRequest());
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/amortization";
     }
 
     @PostMapping("/Accounting/Amortization")
-    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model) {
+    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model, HttpServletRequest request) {
         Account account = accountService.getAccount(instrumentName, amortizationRequest.getTicker());
         if (account != null) {
             try {
@@ -268,6 +282,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/amortization";
     }
 }
