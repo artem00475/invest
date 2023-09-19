@@ -46,6 +46,7 @@
         
     </div>
     <div th:unless="${sells.getTotalElements()}">Пока здесь ничего нет</div>
+    <div id="form-container">
     <form action="#" th:action="@{/Accounting/Sell}" th:object="${sellRequest}" method="post" id="form">
         <h2>ПРОДАЖИ</h2>
         <p type="Дата">
@@ -66,6 +67,7 @@
         </p>
         <input type="submit" value="Добавить" class="cstm-btn btn"/>
     </form>
+    </div>
 </div>
 </body>
 </html>

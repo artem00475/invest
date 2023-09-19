@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head th:replace="~{fragments/header}"></head>
+</br>
 <div id="main">
     <script th:inline="javascript">
         let error = [[${error}]];
@@ -8,7 +9,6 @@
             alert(error);
         }
     </script>
-    </br>
     <div th:if="${deposits.getTotalElements()}" id="table-container">
         <div id="table-div">
         <table class="table" id="table">
@@ -33,6 +33,7 @@
         </script>
     </div>
     <div th:unless="${deposits.getTotalElements()}">Пока здесь ничего нет</div>
+    <div id="form-container">
     <form action="#" th:action="@{/Accounting/Deposit}" th:object="${depositRequest}" method="post" id="form">
         <h2>ДОБАВИТЬ ПОПОЛНЕНИЕ</h2>
         <p type="Дата">
@@ -43,6 +44,7 @@
         </p>
         <input type="submit" value="Добавить" class="cstm-btn btn"/>
     </form>
+</div>
 </div>
 </body>
 </html>

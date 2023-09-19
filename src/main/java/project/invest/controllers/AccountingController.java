@@ -70,7 +70,7 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Buy")
-    public String getBuy(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getBuy(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
@@ -80,7 +80,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Buy")
-    public String addBuy(@ModelAttribute BuyRequest buyRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String addBuy(@ModelAttribute BuyRequest buyRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         try {
             AccountBuy accountBuy = new AccountBuy();
             accountBuy.setCost(Float.parseFloat(buyRequest.getCost()));
@@ -107,7 +107,7 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Dividends")
-    public String getDividends(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getDividends(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName, pageable));
@@ -118,7 +118,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Dividends")
-    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         Account account = accountService.getAccount(instrumentName, dividendsRequest.getTicker());
         if (account != null) {
             try {
@@ -150,7 +150,7 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Sell")
-    public String getSells(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getSells(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
@@ -161,7 +161,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Sell")
-    public String addSells(@ModelAttribute SellRequest sellRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String addSells(@ModelAttribute SellRequest sellRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         Account account = accountService.getAccount(instrumentName, sellRequest.getTicker());
         if (account != null) {
             try {
@@ -195,7 +195,7 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Deposit")
-    public String getDeposits(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getDeposits(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("deposits", depositService.getDeposits(instrumentName, pageable));
@@ -205,7 +205,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Deposit")
-    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         try {
             Deposit deposit = new Deposit();
             deposit.setDate(depositRequest.getDate());
@@ -222,7 +222,7 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Commission")
-    public String getCommissions(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getCommissions(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("commissions", commissionService.getCommissions(instrumentName, pageable));
@@ -232,7 +232,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Commission")
-    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         try {
             Commission commission = new Commission();
             commission.setDate(commissionRequest.getDate());
@@ -250,7 +250,7 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Amortization")
-    public String getAmortizations(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getAmortizations(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
@@ -261,7 +261,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Amortization")
-    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         Account account = accountService.getAccount(instrumentName, amortizationRequest.getTicker());
         if (account != null) {
             try {

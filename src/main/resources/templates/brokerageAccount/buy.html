@@ -33,6 +33,7 @@
         </script>
     </div>
     <div th:unless="${buys.getTotalElements()}">Пока здесь ничего нет</div>
+    <div id="form-container">
     <form action="#" th:action="@{/Accounting/Buy}" th:object="${buyRequest}" method="post" id="form">
         <h2>ПОКУПКА</h2>
         <p type="Дата">
@@ -55,6 +56,7 @@
         </p>
         <input type="submit" value="Добавить" class="cstm-btn btn"/>
     </form>
+</div>
 </div>
 </body>
 </html>
