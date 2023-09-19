@@ -61,7 +61,11 @@
             <input type="date" th:field="*{date}" required>
         </p>
         <p type="Тикер">
-            <input type="text" th:field="*{ticker}" required placeholder="Введите тикер...">
+            <select th:field="*{ticker}">
+                <option th:each="account : ${accounts}"
+                        th:value="${account.ticker}" th:text="${account.name}"></option>
+            </select>
+            <!-- <input type="text" th:field="*{ticker}" required placeholder="Введите тикер..."> -->
         </p>
         <p type="Цена">
             <input type="text" th:field="*{cost}" required placeholder="Введите цену...">

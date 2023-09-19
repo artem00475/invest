@@ -102,6 +102,7 @@ public class AccountingController {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividendsRequest", new DividendsRequest());
         return "brokerageAccount/dividends";
     }
@@ -132,6 +133,7 @@ public class AccountingController {
             }
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         return "brokerageAccount/dividends";
     }
@@ -140,6 +142,7 @@ public class AccountingController {
     public String getSells(@RequestParam String instrumentName, Model model) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("sells", sellsService.getSells(instrumentName));
         model.addAttribute("sellRequest", new SellRequest());
         return "brokerageAccount/sell";
@@ -173,6 +176,7 @@ public class AccountingController {
             }
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("sells", sellsService.getSells(instrumentName));
         return "brokerageAccount/sell";
     }
@@ -233,6 +237,7 @@ public class AccountingController {
     public String getAmortizations(@RequestParam String instrumentName, Model model) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName));
         model.addAttribute("amortizationRequest", new AmortizationRequest());
         return "brokerageAccount/amortization";
@@ -261,6 +266,7 @@ public class AccountingController {
             }
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
+        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
         return "brokerageAccount/amortization";
     }
