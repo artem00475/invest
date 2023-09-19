@@ -1,7 +1,7 @@
 package project.invest.jpa.entities;
 
 public enum MenuEnum {
-    HOME("Аккаунт", "/Accounting"),
+    HOME("Счет", "/Accounting"),
     DEPOSIT("Пополнить", "/Accounting/Deposit"),
     BUYS("Покупки", "/Accounting/Buy"),
     DIVIDENDS("Дивиденды", "/Accounting/Dividends"),

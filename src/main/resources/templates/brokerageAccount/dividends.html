@@ -9,7 +9,7 @@
             alert(error);
         }
     </script>
-    <div th:if="${ not#lists.isEmpty(dividends)}" id="table-container">
+    <div th:if="${dividends.getTotalElements()}" id="table-container">
         <div id="table-div">
         <table class="table" id="table">
             <tr>
@@ -20,7 +20,7 @@
                 <th>Сумма</th>
                 <th>Налог</th>
             </tr>
-            <tr th:each="dividend : ${dividends}">
+            <tr th:each="dividend : ${dividends.getContent()}">
                 <td th:text="${dividend.date}"></td>
                 <td th:text="${dividend.ticker}"></td>
                 <td th:text="${dividend.cost}"></td>
@@ -32,12 +32,15 @@
         </div>
         <div id="page-pointer"></div>
         <div id="btn_container">
-            <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
-            <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
+            <button id="back" class="cstm-btn btn">Назад</button>
+            <button id="next" class="cstm-btn btn">Вперед</button>
         </div>
         <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
+        <script th:inline="javascript">
+            setPageNavigation([[${dividends}]]);
+        </script>
     </div>
-    <div th:unless="${ not#lists.isEmpty(dividends)}">Пока здесь ничего нет</div>
+    <div th:unless="${dividends.getTotalElements()}">Пока здесь ничего нет</div>
     <form action="#" th:action="@{/Accounting/Dividends}" th:object="${dividendsRequest}" method="post" id="form">
         <h2>ДИВИДЕНДЫ</h2>
         <p type="Дата">

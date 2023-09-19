@@ -1,10 +1,11 @@
 package project.invest.jpa.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import project.invest.jpa.entities.Deposit;
 
-import java.util.List;
 
 public interface DepositRepository extends JpaRepository<Deposit, Long> {
-    List<Deposit> findAllByInstrumentName(String name);
+    Page<Deposit> findAllByInstrumentName(String name, Pageable pageable);
 }

@@ -9,7 +9,7 @@
             alert(error);
         }
     </script>
-    <div th:if="${ not#lists.isEmpty(sells)}" id="table-container">
+    <div th:if="${sells.getTotalElements()}" id="table-container">
         <div id="table-div">
         <table class="table" id="table">
             <tr>
@@ -22,7 +22,7 @@
                 <th>Средняя сумма</th>
                 <th>Изменение</th>
             </tr>
-            <tr th:each="sell : ${sells}">
+            <tr th:each="sell : ${sells.getContent()}">
                 <td th:text="${sell.date}"></td>
                 <td th:text="${sell.ticker}"></td>
                 <td th:text="${sell.cost}"></td>
@@ -36,12 +36,16 @@
         </div>
         <div id="page-pointer"></div>
         <div id="btn_container">
-            <button id="back" onclick="back10()" class="cstm-btn btn">Назад</button>
-            <button id="next" onclick="next10()" class="cstm-btn btn">Вперед</button>
+            <button id="back" class="cstm-btn btn">Назад</button>
+            <button id="next" class="cstm-btn btn">Вперед</button>
         </div>
         <script type="text/javascript" th:src="@{../table.js}" src="static/table.js"></script>
+        <script th:inline="javascript">
+            setPageNavigation([[${sells}]]);
+        </script>
+        
     </div>
-    <div th:unless="${ not#lists.isEmpty(sells)}">Пока здесь ничего нет</div>
+    <div th:unless="${sells.getTotalElements()}">Пока здесь ничего нет</div>
     <form action="#" th:action="@{/Accounting/Sell}" th:object="${sellRequest}" method="post" id="form">
         <h2>ПРОДАЖИ</h2>
         <p type="Дата">

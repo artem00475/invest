@@ -1,6 +1,9 @@
 package project.invest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,17 +70,17 @@ public class AccountingController {
     }
 
     @GetMapping("/Accounting/Buy")
-    public String getBuy(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
+    public String getBuy(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
+        model.addAttribute("buys", accountBuyService.getBuys(instrumentName, pageable));
         model.addAttribute("buyRequest", new BuyRequest());
         return "brokerageAccount/buy";
     }
 
     @PostMapping("/Accounting/Buy")
-    public String addBuy(@ModelAttribute BuyRequest buyRequest, Model model, HttpServletRequest request) {
+    public String addBuy(@ModelAttribute BuyRequest buyRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         try {
             AccountBuy accountBuy = new AccountBuy();
             accountBuy.setCost(Float.parseFloat(buyRequest.getCost()));
@@ -99,15 +102,15 @@ public class AccountingController {
         }
         model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("buys", accountBuyService.getBuys(instrumentName));
+        model.addAttribute("buys", accountBuyService.getBuys(instrumentName, pageable));
         return "brokerageAccount/buy";
     }
 
     @GetMapping("/Accounting/Dividends")
-    public String getDividends(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
+    public String getDividends(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName, pageable));
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividendsRequest", new DividendsRequest());
         model.addAttribute("currentUri", request.getRequestURI());
@@ -115,7 +118,7 @@ public class AccountingController {
     }
 
     @PostMapping("/Accounting/Dividends")
-    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model, HttpServletRequest request) {
+    public String addDividends(@ModelAttribute DividendsRequest dividendsRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         Account account = accountService.getAccount(instrumentName, dividendsRequest.getTicker());
         if (account != null) {
             try {
@@ -141,24 +144,24 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("dividends", dividendsService.getDividends(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/dividends";
     }
 
     @GetMapping("/Accounting/Sell")
-    public String getSells(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
+    public String getSells(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("sells", sellsService.getSells(instrumentName));
+        model.addAttribute("sells", sellsService.getSells(instrumentName, pageable));
         model.addAttribute("sellRequest", new SellRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/sell";
     }
 
     @PostMapping("/Accounting/Sell")
-    public String addSells(@ModelAttribute SellRequest sellRequest, Model model, HttpServletRequest request) {
+    public String addSells(@ModelAttribute SellRequest sellRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         Account account = accountService.getAccount(instrumentName, sellRequest.getTicker());
         if (account != null) {
             try {
@@ -186,23 +189,23 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("sells", sellsService.getSells(instrumentName));
+        model.addAttribute("sells", sellsService.getSells(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/sell";
     }
 
     @GetMapping("/Accounting/Deposit")
-    public String getDeposits(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
+    public String getDeposits(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("deposits", depositService.getDeposits(instrumentName));
+        model.addAttribute("deposits", depositService.getDeposits(instrumentName, pageable));
         model.addAttribute("depositRequest", new DepositRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/deposits";
     }
 
     @PostMapping("/Accounting/Deposit")
-    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model, HttpServletRequest request) {
+    public String addDeposit(@ModelAttribute DepositRequest depositRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         try {
             Deposit deposit = new Deposit();
             deposit.setDate(depositRequest.getDate());
@@ -214,22 +217,22 @@ public class AccountingController {
             model.addAttribute("error", "Некорректные значения");
         }
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("deposits", depositService.getDeposits(instrumentName));
+        model.addAttribute("deposits", depositService.getDeposits(instrumentName, pageable));
         return "brokerageAccount/deposits";
     }
 
     @GetMapping("/Accounting/Commission")
-    public String getCommissions(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
+    public String getCommissions(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
+        model.addAttribute("commissions", commissionService.getCommissions(instrumentName, pageable));
         model.addAttribute("commissionRequest", new CommissionRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/commissions";
     }
 
     @PostMapping("/Accounting/Commission")
-    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model, HttpServletRequest request) {
+    public String addCommission(@ModelAttribute CommissionRequest commissionRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         try {
             Commission commission = new Commission();
             commission.setDate(commissionRequest.getDate());
@@ -241,24 +244,24 @@ public class AccountingController {
             model.addAttribute("error", "Некорректные значения");
         }
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("commissions", commissionService.getCommissions(instrumentName));
+        model.addAttribute("commissions", commissionService.getCommissions(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/commissions";
     }
 
     @GetMapping("/Accounting/Amortization")
-    public String getAmortizations(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
+    public String getAmortizations(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName));
+        model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName, pageable));
         model.addAttribute("amortizationRequest", new AmortizationRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/amortization";
     }
 
     @PostMapping("/Accounting/Amortization")
-    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model, HttpServletRequest request) {
+    public String addAmortization(@ModelAttribute AmortizationRequest amortizationRequest, Model model, HttpServletRequest request, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable) {
         Account account = accountService.getAccount(instrumentName, amortizationRequest.getTicker());
         if (account != null) {
             try {
@@ -281,7 +284,7 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("dividends", dividendsService.getDividends(instrumentName));
+        model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/amortization";
     }

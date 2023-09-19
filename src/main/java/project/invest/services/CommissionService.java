@@ -1,6 +1,8 @@
 package project.invest.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.invest.jpa.entities.Commission;
 import project.invest.jpa.entities.SummaryEntity;
@@ -23,7 +25,7 @@ public class CommissionService {
         this.summaryRepository = summaryRepository;
     }
 
-    public List<Commission> getCommissions(String instrumentName) {return commissionRepository.findAllByInstrumentName(instrumentName);}
+    public Page<Commission> getCommissions(String instrumentName, Pageable pageable) {return commissionRepository.findAllByInstrumentName(instrumentName, pageable);}
 
     public void addCommission(Commission commission) {
         commissionRepository.save(commission);
