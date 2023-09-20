@@ -3,6 +3,8 @@ package project.invest.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.Getter;
 import project.invest.jpa.entities.*;
 import project.invest.jpa.repositories.AccountRepository;
 import project.invest.jpa.repositories.PaperRepository;
@@ -11,6 +13,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Service
 public class AccountService {
 
@@ -23,21 +26,41 @@ public class AccountService {
     @Autowired
     private final PaperRepository paperRepository;
 
-    public AccountService(AccountRepository accountRepository, SummaryService summaryService, PaperRepository paperRepository) {
+    @Autowired
+    private final AccountBuyService accountBuyService;
+
+    @Autowired
+    private final DividendsService dividendsService;
+
+    @Autowired
+    private final SellsService sellsService;
+
+    @Autowired
+    private final DepositService depositService;
+
+    @Autowired
+    private final CommissionService commissionService;
+
+    @Autowired
+    private final AmortizationService amortizationService;
+
+    public AccountService(AccountRepository accountRepository, SummaryService summaryService, PaperRepository paperRepository, AccountBuyService accountBuyService, DividendsService dividendsService, SellsService sellsService, DepositService depositService, CommissionService commissionService, AmortizationService amortizationService) {
         this.accountRepository = accountRepository;
         this.summaryService = summaryService;
         this.paperRepository = paperRepository;
+        this.accountBuyService = accountBuyService;
+        this.dividendsService = dividendsService;
+        this.sellsService = sellsService;
+        this.depositService = depositService;
+        this.commissionService = commissionService;
+        this.amortizationService = amortizationService;
     }
 
+    //Buy
     public void addAccount(AccountBuy accountBuy, PaperTypeEnum type) {
         Account account = accountRepository.findByInstrumentNameAndTicker(accountBuy.getInstrumentName(), accountBuy.getTicker());
-        if (account == null) {
-            account = new Account();
-            account.setAverageCost(accountBuy.getCost());
-            account.setInstrumentName(accountBuy.getInstrumentName());
-            account.setCount(accountBuy.getCount());
-            account.setTicker(accountBuy.getTicker());
-            accountRepository.save(account);
+        account = accountBuyService.addBuy(accountBuy, account);
+        accountRepository.save(account);
             if (paperRepository.findByTicker(account.getTicker())==null) {
                 Paper paper = new Paper();
                 paper.setTicker(account.getTicker());
@@ -45,54 +68,29 @@ public class AccountService {
                 System.out.println(paper.getTicker()+' '+paper.getType());
                 paperRepository.save(paper);
             }
-        } else {
-            account.setAverageCost((account.getAverageCost()*account.getCount()+accountBuy.getSum())/(account.getCount()+accountBuy.getCount()));
-            account.setCount(account.getCount()+accountBuy.getCount());
-            accountRepository.save(account);
-        }
-        SummaryEntity summaryEntity = summaryService.getSummary(accountBuy.getInstrumentName());
-        summaryEntity.setBalance(summaryEntity.getBalance()-accountBuy.getSum());
-        summaryService.addToSummery(summaryEntity);
+        summaryService.setBalance(accountBuy.getInstrumentName(),-accountBuy.getSum());
         updateSummary(accountBuy.getInstrumentName());
     }
 
+    //Dividends
     public void addAccount(Dividends dividends) {
         Account account = accountRepository.findByInstrumentNameAndTicker(dividends.getInstrumentName(), dividends.getTicker());
-        if (account == null) {
-            account = new Account();
-            account.setInstrumentName(dividends.getInstrumentName());
-            account.setTicker(dividends.getTicker());
-            account.setDividends(dividends.getSum());
-            accountRepository.save(account);
-        } else {
-            account.setDividends(account.getDividends()+dividends.getSum());
-            accountRepository.save(account);
-        }
-        SummaryEntity summaryEntity = summaryService.getSummary(dividends.getInstrumentName());
-        summaryEntity.setBalance(summaryEntity.getBalance()+dividends.getSum());
-        summaryEntity.setResult(summaryEntity.getResult()+dividends.getSum());
-        summaryService.addToSummery(summaryEntity);
+        if (account == null) return;
+        account = dividendsService.addDividends(dividends, account);
+        summaryService.setBalance(dividends.getInstrumentName(), dividends.getSum());
+        summaryService.setResult(dividends.getInstrumentName(), dividends.getSum());
         updateSummary(dividends.getInstrumentName());
     }
 
+    //Amortization
     public void addAccount(Amortization amortization) {
         Account account = accountRepository.findByInstrumentNameAndTicker(amortization.getInstrumentName(), amortization.getTicker());
-        if (account == null) {
-            account = new Account();
-            account.setInstrumentName(amortization.getInstrumentName());
-            account.setTicker(amortization.getTicker());
-            account.setDividends(amortization.getSum());
-            accountRepository.save(account);
-        } else {
-            account.setAverageCost(account.getAverageCost()-amortization.getCost());
-            accountRepository.save(account);
-        }
-        SummaryEntity summaryEntity = summaryService.getSummary(amortization.getInstrumentName());
-        summaryEntity.setBalance(summaryEntity.getBalance()+amortization.getSum());
-        summaryService.addToSummery(summaryEntity);
+        account = amortizationService.addAmortization(amortization, account);
+        summaryService.setBalance(amortization.getInstrumentName(), amortization.getSum());
         updateSummary(amortization.getInstrumentName());
     }
 
+    //Sell
     @Transactional
     public void addAccount(AccountSell accountSell) {
         Account account = accountRepository.findByInstrumentNameAndTicker(accountSell.getInstrumentName(), accountSell.getTicker());
@@ -106,12 +104,21 @@ public class AccountService {
                 accountRepository.save(account);
 
             }
-            SummaryEntity summaryEntity = summaryService.getSummary(accountSell.getInstrumentName());
-            summaryEntity.setBalance(summaryEntity.getBalance()+accountSell.getSum());
-            summaryEntity.setResult(summaryEntity.getResult()+accountSell.getChange());
-            summaryService.addToSummery(summaryEntity);
+            sellsService.addSell(accountSell);
+            summaryService.setBalance(accountSell.getInstrumentName(), accountSell.getSum());
+            summaryService.setResult(accountSell.getInstrumentName(), accountSell.getChange());
             updateSummary(accountSell.getInstrumentName());
         }
+    }
+
+    //Commission
+    public void addAccount(Commission commission) {
+        commissionService.addCommission(commission);
+    }
+
+    //Deposit
+    public void addAccount(Deposit deposit) {
+        depositService.deposit(deposit);
     }
 
     public List<Account> getAccounts(String instrumentName) {return accountRepository.findAllByInstrumentName(instrumentName);}

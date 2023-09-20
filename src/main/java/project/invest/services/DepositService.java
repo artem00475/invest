@@ -9,7 +9,6 @@ import project.invest.jpa.entities.SummaryEntity;
 import project.invest.jpa.repositories.DepositRepository;
 import project.invest.jpa.repositories.SummaryRepository;
 
-import java.util.List;
 
 @Service
 public class DepositService {

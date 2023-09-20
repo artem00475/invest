@@ -21,6 +21,18 @@ public class SummaryService {
 
     public void addToSummery(SummaryEntity summaryEntity) {summaryRepository.save(summaryEntity);}
 
+    public void setBalance(String name, float change) {
+        SummaryEntity summaryEntity = getSummary(name);
+        summaryEntity.setBalance(summaryEntity.getBalance()+change);
+        addToSummery(summaryEntity);
+    }
+
+    public void setResult(String name, float change) {
+        SummaryEntity summaryEntity = getSummary(name);
+        summaryEntity.setResult(summaryEntity.getResult()+change);
+        addToSummery(summaryEntity);
+    }
+
     public List<SummaryEntity> getAllByUserName(String user) {return summaryRepository.findAllByUserName(user);}
     public List<SummaryEntity> getAllByUserNameAndType(String user, InstrumentTypeEnum instrumentTypeEnum) {return summaryRepository.findAllByUserNameAndInstrumentTypeEnum(user, instrumentTypeEnum);}
 

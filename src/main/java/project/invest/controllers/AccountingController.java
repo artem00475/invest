@@ -21,31 +21,11 @@ import java.util.Objects;
 @Controller
 public class AccountingController {
     private String instrumentName;
-
-    @Autowired
-    private final AccountBuyService accountBuyService;
+    
     @Autowired
     private final AccountService accountService;
-    @Autowired
-    private final DividendsService dividendsService;
-    @Autowired
-    private final SellsService sellsService;
-    @Autowired
-    private final DepositService depositService;
-    @Autowired
-    private final CommissionService commissionService;
-    @Autowired
-    private final AmortizationService amortizationService;
 
-    public AccountingController(AccountBuyService accountBuyService, AccountService accountService, DividendsService dividendsService, SellsService sellsService, DepositService depositService, CommissionService commissionService, AmortizationService amortizationService) {
-        this.accountBuyService = accountBuyService;
-        this.accountService = accountService;
-        this.dividendsService = dividendsService;
-        this.sellsService = sellsService;
-        this.depositService = depositService;
-        this.commissionService = commissionService;
-        this.amortizationService = amortizationService;
-    }
+    public AccountingController(AccountService accountService) {this.accountService=accountService;}
 
     @GetMapping("/Accounting")
     public String getAccounting(@RequestParam String instrumentName, Model model, HttpServletRequest request) {
@@ -74,7 +54,7 @@ public class AccountingController {
         this.instrumentName = instrumentName;
         model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("buys", accountBuyService.getBuys(instrumentName, pageable));
+        model.addAttribute("buys", accountService.getAccountBuyService().getBuys(instrumentName, pageable));
         model.addAttribute("buyRequest", new BuyRequest());
         return "brokerageAccount/buy";
     }
@@ -89,20 +69,19 @@ public class AccountingController {
             accountBuy.setInstrumentName(instrumentName);
             accountBuy.setTicker(buyRequest.getTicker());
             accountBuy.setDate(buyRequest.getDate());
-            accountBuyService.addBuy(accountBuy);
-            System.out.println("Added");
             PaperTypeEnum type;
             if (Objects.equals(buyRequest.getType(), "Акция")) type=PaperTypeEnum.STOCK;
             else if (Objects.equals(buyRequest.getType(), "Валюта")) type=PaperTypeEnum.CURRENCY;
             else if (Objects.equals(buyRequest.getType(), "Фонд")) type=PaperTypeEnum.FUND;
             else type=PaperTypeEnum.BOND;
             accountService.addAccount(accountBuy, type);
+            System.out.println("Added buy on instrument: " + accountBuy.getInstrumentName() +" ticker: " + accountBuy.getTicker());
         } catch (NumberFormatException e) {
             System.out.println("Error");
         }
         model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("buys", accountBuyService.getBuys(instrumentName, pageable));
+        model.addAttribute("buys", accountService.getAccountBuyService().getBuys(instrumentName, pageable));
         return "brokerageAccount/buy";
     }
 
@@ -110,7 +89,7 @@ public class AccountingController {
     public String getDividends(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("dividends", dividendsService.getDividends(instrumentName, pageable));
+        model.addAttribute("dividends", accountService.getDividendsService().getDividends(instrumentName, pageable));
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
         model.addAttribute("dividendsRequest", new DividendsRequest());
         model.addAttribute("currentUri", request.getRequestURI());
@@ -133,9 +112,8 @@ public class AccountingController {
                     dividends.setDate(dividendsRequest.getDate());
                     if (instrumentName.equals("ИИС") & accountService.getType(dividendsRequest.getTicker()) == PaperTypeEnum.BOND) dividends.setTax(0);
                     else dividends.setTax(dividends.getSum() * 0.13f);
-                    dividendsService.addDividends(dividends);
-                    System.out.println("Added");
                     accountService.addAccount(dividends);
+                    System.out.println("Added dividends on instrument: " + dividends.getInstrumentName() +" ticker: " + dividends.getTicker());
                 }else model.addAttribute("error", "Некорректное число бумаг");
             } catch (NumberFormatException e) {
                 System.out.println("Error");
@@ -144,7 +122,7 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("dividends", dividendsService.getDividends(instrumentName, pageable));
+        model.addAttribute("dividends", accountService.getDividendsService().getDividends(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/dividends";
     }
@@ -154,7 +132,7 @@ public class AccountingController {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("sells", sellsService.getSells(instrumentName, pageable));
+        model.addAttribute("sells", accountService.getSellsService().getSells(instrumentName, pageable));
         model.addAttribute("sellRequest", new SellRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/sell";
@@ -176,9 +154,8 @@ public class AccountingController {
                     accountSell.setTicker(sellRequest.getTicker());
                     accountSell.setDate(sellRequest.getDate());
                     accountSell.setChange(accountSell.getSum() - accountSell.getAverageSum());
-                    sellsService.addSell(accountSell);
-                    System.out.println("Added");
                     accountService.addAccount(accountSell);
+                    System.out.println("Added sell on instrument: " + accountSell.getInstrumentName() +" ticker: " + accountSell.getTicker());
                 } else {
                     model.addAttribute("error", "Некорректное число бумаг");
                 }
@@ -189,7 +166,7 @@ public class AccountingController {
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("sells", sellsService.getSells(instrumentName, pageable));
+        model.addAttribute("sells", accountService.getSellsService().getSells(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/sell";
     }
@@ -198,7 +175,7 @@ public class AccountingController {
     public String getDeposits(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("deposits", depositService.getDeposits(instrumentName, pageable));
+        model.addAttribute("deposits", accountService.getDepositService().getDeposits(instrumentName, pageable));
         model.addAttribute("depositRequest", new DepositRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/deposits";
@@ -211,13 +188,15 @@ public class AccountingController {
             deposit.setDate(depositRequest.getDate());
             deposit.setSum(Float.parseFloat(depositRequest.getSum()));
             deposit.setInstrumentName(instrumentName);
-            depositService.deposit(deposit);
+            accountService.addAccount(deposit);
+            System.out.println("Added deposit on instrument: " + deposit.getInstrumentName());
         } catch (NumberFormatException e) {
             System.out.println("Error");
             model.addAttribute("error", "Некорректные значения");
         }
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("deposits", depositService.getDeposits(instrumentName, pageable));
+        model.addAttribute("deposits", accountService.getDepositService().getDeposits(instrumentName, pageable));
+        model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/deposits";
     }
 
@@ -225,7 +204,7 @@ public class AccountingController {
     public String getCommissions(@RequestParam String instrumentName, Model model, HttpServletRequest request, @PageableDefault(sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable) {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("commissions", commissionService.getCommissions(instrumentName, pageable));
+        model.addAttribute("commissions", accountService.getCommissionService().getCommissions(instrumentName, pageable));
         model.addAttribute("commissionRequest", new CommissionRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/commissions";
@@ -238,13 +217,14 @@ public class AccountingController {
             commission.setDate(commissionRequest.getDate());
             commission.setSum(Float.parseFloat(commissionRequest.getSum()));
             commission.setInstrumentName(instrumentName);
-            commissionService.addCommission(commission);
+            accountService.addAccount(commission);
+            System.out.println("Added commission on instrument: " + commission.getInstrumentName());
         } catch (NumberFormatException e) {
             System.out.println("Error");
             model.addAttribute("error", "Некорректные значения");
         }
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("commissions", commissionService.getCommissions(instrumentName, pageable));
+        model.addAttribute("commissions", accountService.getCommissionService().getCommissions(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/commissions";
     }
@@ -254,7 +234,7 @@ public class AccountingController {
         this.instrumentName = instrumentName;
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName, pageable));
+        model.addAttribute("amortization", accountService.getAmortizationService().getAmortizations(instrumentName, pageable));
         model.addAttribute("amortizationRequest", new AmortizationRequest());
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/amortization";
@@ -273,9 +253,8 @@ public class AccountingController {
                     amortization.setInstrumentName(instrumentName);
                     amortization.setTicker(amortizationRequest.getTicker());
                     amortization.setDate(amortizationRequest.getDate());
-                    amortizationService.addAmortization(amortization);
-                    System.out.println("Added");
                     accountService.addAccount(amortization);
+                    System.out.println("Added amortization on instrument: " + amortization.getInstrumentName() +" ticker: " + amortization.getTicker());
                 }else model.addAttribute("error", "Некорректное число бумаг");
             } catch (NumberFormatException e) {
                 System.out.println("Error");
@@ -283,8 +262,7 @@ public class AccountingController {
             }
         } else model.addAttribute("error", "Бумага отсутствует в данном инстременте");
         model.addAttribute("instrumentName", instrumentName);
-        model.addAttribute("accounts", accountService.getAccounts(instrumentName));
-        model.addAttribute("amortization", amortizationService.getAmortizations(instrumentName, pageable));
+        model.addAttribute("amortization", accountService.getAmortizationService().getAmortizations(instrumentName, pageable));
         model.addAttribute("currentUri", request.getRequestURI());
         return "brokerageAccount/amortization";
     }

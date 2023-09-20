@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import project.invest.jpa.entities.AccountSell;
 import project.invest.jpa.repositories.SellsRepository;
 
-import java.util.List;
 
 @Service
 public class SellsService {
