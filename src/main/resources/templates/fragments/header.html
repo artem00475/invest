@@ -15,6 +15,10 @@
         <a href="/">Портфель</a>
         <a th:each="section : ${T(project.invest.jpa.entities.MenuEnum).values()}" th:text="${section.getDisplayValue()}" th:href="@{{uri}(instrumentName=${instrumentName},uri=${section.getUrl()})}"
         th:class="${currentUri} == ${section.getUrl} ? 'active'"></a>
+        <a href="#" onclick="document.getElementById('exit').click()" class="active">Выход</a>
+        <form th:action="@{/logout}" method="post" hidden>
+            <input type="submit" value="Sign Out" id="exit"/>
+        </form>
     </div>
 </div>
 

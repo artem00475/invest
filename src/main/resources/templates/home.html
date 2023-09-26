@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Портфель</title>
@@ -14,6 +14,13 @@
 <body>
 <div class="header">
     <a href="#default" class="logo">Портфель</a>
+    <div class="header-right">
+        <a href="#" th:text="${user}"></a>
+        <a href="#" onclick="document.getElementById('exit').click()" class="active">Выход</a>
+        <form th:action="@{/logout}" method="post" hidden>
+            <input type="submit" value="Sign Out" id="exit"/>
+        </form>
+    </div>
 </div>
 </br>
 <div th:switch="${ifUpdated}">
@@ -75,15 +82,16 @@
         </form>
     </div>
     <div th:case="0">
+        <form action="#" th:action="@{/update}" th:object="${costList}" method="post" id="form1" hidden>
+            <input type="text" th:field="*{array}" id="cost_array">
+            <input type="submit"  id="cost_submit"/>
+        </form>
         <h1>Loading...</h1>
-        <script type="text/javascript" th:src="@{fetchCost.js}" src="static/fetchCost.js"></script>
+        <script type="text/javascript" th:src="@{fetchCost.js}" src="/static/fetchCost.js"></script>
         <script th:inline="javascript">
             let tickers = [[${tickers}]];
             fetchCost(tickers);
         </script>
-        <form action="#" th:action="@{/update}" method="post">
-            <input id="update_cost" type="submit" value="Добавить" style="display: none"/>
-        </form>
     </div>
     </div>
 </div>

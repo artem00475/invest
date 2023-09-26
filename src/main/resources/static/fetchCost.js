@@ -375,28 +375,6 @@ function getCurrentBondsCost(tickers, costs_dict, costs, elements) {
 }
 
 function update(costs) {
-    console.log(costs)
-    fetch("http://localhost:8080/cost", {
-        method: "POST",
-        body: JSON.stringify(costs),
-        headers: {
-            "Content-Type": "application/JSON",
-        },
-    })
-        .then(function (response) {
-            if (response.status !== 200) {
-                return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then((response) => {
-            return response.text()
-        })
-        .then((data) => {
-            console.log(data)
-            document.getElementById("update_cost").click();
-        })
-        .catch(function (error) {
-            console.log("Error: ",error)
-        })
+    document.getElementById('cost_array').value = costs
+    document.getElementById('cost_submit').click()
 }
