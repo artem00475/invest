@@ -35,6 +35,11 @@
     color: white;
 }
 
+.header a.exit {
+    background-color: #7036b0;
+    color: white;
+}
+
 /* Сдвигаем секцию со ссылками вправо */
 .header-right {
     float: right;

@@ -16,7 +16,7 @@
     <a href="#default" class="logo">Портфель</a>
     <div class="header-right">
         <a href="#" th:text="${user}"></a>
-        <a href="#" onclick="document.getElementById('exit').click()" class="active">Выход</a>
+        <a href="#" onclick="document.getElementById('exit').click()" class="exit">Выход</a>
         <form th:action="@{/logout}" method="post" hidden>
             <input type="submit" value="Sign Out" id="exit"/>
         </form>
