@@ -24,4 +24,6 @@ public class Dividends {
     private float sum;
     private float tax;
     private String instrumentName;
+    @ManyToOne
+    private  User user;
 }

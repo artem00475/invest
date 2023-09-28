@@ -20,7 +20,7 @@ public class AmortizationService {
         this.amortizationRepository = amortizationRepository;
     }
 
-    public Page<Amortization> getAmortizations(String instrumentName, Pageable pageable) {return amortizationRepository.findAllByInstrumentName(instrumentName, pageable);}
+    public Page<Amortization> getAmortizations(String instrumentName, String user, Pageable pageable) {return amortizationRepository.findAmortizationsByInstrumentNameAndUser_Username(instrumentName, user, pageable);}
 
     public Account addAmortization(Amortization amortization, Account account) {
         if (account != null) {

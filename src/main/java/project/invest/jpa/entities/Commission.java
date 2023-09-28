@@ -19,4 +19,6 @@ public class Commission {
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private Date date;
     private float sum;
+    @ManyToOne
+    private  User user;
 }

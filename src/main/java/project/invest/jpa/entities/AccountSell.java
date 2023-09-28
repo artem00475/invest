@@ -26,4 +26,6 @@ public class AccountSell {
     private float averageSum;
     private float change;
     private String instrumentName;
+    @ManyToOne
+    private  User user;
 }

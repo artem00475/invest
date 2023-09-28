@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import project.invest.jpa.entities.AccountBuy;
 
 public interface AccountBuyRepository extends JpaRepository<AccountBuy, Long> {
-    Page<AccountBuy> findAllByInstrumentName(String name, Pageable pageable);
+    Page<AccountBuy> findAccountBuysByInstrumentNameAndUser_Username(String name,String user, Pageable pageable);
 }

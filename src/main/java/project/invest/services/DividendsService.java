@@ -20,7 +20,7 @@ public class DividendsService {
         this.dividendsRepository = dividendsRepository;
     }
 
-    public Page<Dividends> getDividends(String instrumentName, Pageable pageable) {return dividendsRepository.findAllByInstrumentName(instrumentName, pageable);}
+    public Page<Dividends> getDividends(String instrumentName, String user, Pageable pageable) {return dividendsRepository.findDividendsByInstrumentNameAndUser_Username(instrumentName, user, pageable);}
 
     public Account addDividends(Dividends dividends, Account account) {
         if (account != null) {

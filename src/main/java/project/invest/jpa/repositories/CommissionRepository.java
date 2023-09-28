@@ -7,5 +7,5 @@ import project.invest.jpa.entities.Commission;
 
 
 public interface CommissionRepository extends JpaRepository<Commission, Long> {
-    Page<Commission> findAllByInstrumentName(String name, Pageable pageable);
+    Page<Commission> findCommissionsByInstrumentNameAndUser_Username(String name, String user, Pageable pageable);
 }

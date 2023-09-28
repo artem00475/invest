@@ -57,8 +57,8 @@ public class AccountService {
     }
 
     //Buy
-    public void addAccount(AccountBuy accountBuy, PaperTypeEnum type) {
-        Account account = accountRepository.findByInstrumentNameAndTicker(accountBuy.getInstrumentName(), accountBuy.getTicker());
+    public void addAccount(AccountBuy accountBuy, PaperTypeEnum type, String username) {
+        Account account = accountRepository.findByInstrumentNameAndTickerAndUser_Username(accountBuy.getInstrumentName(), accountBuy.getTicker(), username);
         account = accountBuyService.addBuy(accountBuy, account);
         accountRepository.save(account);
             if (paperRepository.findByTicker(account.getTicker())==null) {
@@ -69,31 +69,31 @@ public class AccountService {
                 paperRepository.save(paper);
             }
         summaryService.setBalance(accountBuy.getInstrumentName(),-accountBuy.getSum());
-        updateSummary(accountBuy.getInstrumentName());
+        updateSummary(accountBuy.getInstrumentName(), username);
     }
 
     //Dividends
-    public void addAccount(Dividends dividends) {
-        Account account = accountRepository.findByInstrumentNameAndTicker(dividends.getInstrumentName(), dividends.getTicker());
+    public void addAccount(Dividends dividends, String username) {
+        Account account = accountRepository.findByInstrumentNameAndTickerAndUser_Username(dividends.getInstrumentName(), dividends.getTicker(), username);
         if (account == null) return;
         account = dividendsService.addDividends(dividends, account);
         summaryService.setBalance(dividends.getInstrumentName(), dividends.getSum());
         summaryService.setResult(dividends.getInstrumentName(), dividends.getSum());
-        updateSummary(dividends.getInstrumentName());
+        updateSummary(dividends.getInstrumentName(), username);
     }
 
     //Amortization
-    public void addAccount(Amortization amortization) {
-        Account account = accountRepository.findByInstrumentNameAndTicker(amortization.getInstrumentName(), amortization.getTicker());
+    public void addAccount(Amortization amortization, String username) {
+        Account account = accountRepository.findByInstrumentNameAndTickerAndUser_Username(amortization.getInstrumentName(), amortization.getTicker(), username);
         account = amortizationService.addAmortization(amortization, account);
         summaryService.setBalance(amortization.getInstrumentName(), amortization.getSum());
-        updateSummary(amortization.getInstrumentName());
+        updateSummary(amortization.getInstrumentName(), username);
     }
 
     //Sell
     @Transactional
-    public void addAccount(AccountSell accountSell) {
-        Account account = accountRepository.findByInstrumentNameAndTicker(accountSell.getInstrumentName(), accountSell.getTicker());
+    public void addAccount(AccountSell accountSell, String username) {
+        Account account = accountRepository.findByInstrumentNameAndTickerAndUser_Username(accountSell.getInstrumentName(), accountSell.getTicker(), username);
         if (account != null) {
             account.setCount(account.getCount()-accountSell.getCount());
             if (account.getCount() ==0) {
@@ -107,7 +107,7 @@ public class AccountService {
             sellsService.addSell(accountSell);
             summaryService.setBalance(accountSell.getInstrumentName(), accountSell.getSum());
             summaryService.setResult(accountSell.getInstrumentName(), accountSell.getChange());
-            updateSummary(accountSell.getInstrumentName());
+            updateSummary(accountSell.getInstrumentName(), username);
         }
     }
 
@@ -121,13 +121,13 @@ public class AccountService {
         depositService.deposit(deposit);
     }
 
-    public List<Account> getAccounts(String instrumentName) {return accountRepository.findAllByInstrumentName(instrumentName);}
+    public List<Account> getAccounts(String instrumentName, String username) {return accountRepository.findAllByInstrumentNameAndUser_Username(instrumentName, username);}
 
-    public Account getAccount(String name, String ticker) {return accountRepository.findByInstrumentNameAndTicker(name, ticker);}
+    public Account getAccount(String name, String ticker, String username) {return accountRepository.findByInstrumentNameAndTickerAndUser_Username(name, ticker, username);}
 
-    public void updateSummary(String instrumentName) {
+    public void updateSummary(String instrumentName, String username) {
         SummaryEntity summaryEntity = summaryService.getSummary(instrumentName);
-        List<Account> accounts = accountRepository.findAllByInstrumentName(instrumentName);
+        List<Account> accounts = accountRepository.findAllByInstrumentNameAndUser_Username(instrumentName, username);
         float sum = 0;
         for (Account account : accounts) {
             account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
@@ -168,7 +168,7 @@ public class AccountService {
         return tickers;
     }
 
-    public void updateCost(List<String> costRequest) {
+    public void updateCost(List<String> costRequest, String username) {
         costRequest.forEach(el -> {
             String[] a = el.split("###");
             Paper paper = paperRepository.findByTicker(a[0]);
@@ -185,10 +185,10 @@ public class AccountService {
         accountRepository.saveAll(accounts);
         List<SummaryEntity> summaryEntities = summaryService.getAllByUserNameAndType("Artem", InstrumentTypeEnum.brokerageAccount);
         summaryEntities.forEach(el -> {
-            updateSummary(el.getInstrumentName());
+            updateSummary(el.getInstrumentName(), username);
         });
-        summaryService.updatePercentFromAll();
-        summaryService.updateChangeFromInvested();
+        summaryService.updatePercentFromAll(username);
+        summaryService.updateChangeFromInvested(username);
     }
 
     public float getBalance(String instrumentName) {
@@ -197,10 +197,10 @@ public class AccountService {
 
     public PaperTypeEnum getType(String ticker) {return paperRepository.findByTicker(ticker).getType();}
 
-    public void changePercent(ArrayList<String> arrayList, String instrumentName) {
+    public void changePercent(ArrayList<String> arrayList, String instrumentName, String username) {
         arrayList.forEach(el -> {
             String[] a = el.split("###");
-            Account account = accountRepository.findByInstrumentNameAndTicker(instrumentName, a[1]);
+            Account account = accountRepository.findByInstrumentNameAndTickerAndUser_Username(instrumentName, a[1], username);
             try {
                 account.setMaxShare(Float.parseFloat(a[0]));
                 accountRepository.save(account);

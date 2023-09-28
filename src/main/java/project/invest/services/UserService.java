@@ -76,7 +76,7 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public static String getUserName() {
+    public String getUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

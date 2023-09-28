@@ -1,10 +1,8 @@
 package project.invest.jpa.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +22,8 @@ public class SummaryEntity {
     private float percentFromAll;
     private float invested;
     private float changeFromInvested;
-    private String userName;
+    @ManyToOne
+    private  User user;
     private float balance;
     private float result;
     private InstrumentTypeEnum instrumentTypeEnum;

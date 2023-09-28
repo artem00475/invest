@@ -7,6 +7,5 @@ import project.invest.jpa.entities.Amortization;
 
 
 public interface AmortizationRepository extends JpaRepository<Amortization, Long> {
-
-    Page<Amortization> findAllByInstrumentName(String name, Pageable pageable);
+    Page<Amortization> findAmortizationsByInstrumentNameAndUser_Username(String name, String user, Pageable pageable);
 }

@@ -22,5 +22,6 @@ public class AccountBuy {
     private int count;
     private float sum;
     private String instrumentName;
-
+    @ManyToOne
+    private  User user;
 }

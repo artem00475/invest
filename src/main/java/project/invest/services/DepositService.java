@@ -24,7 +24,7 @@ public class DepositService {
         this.depositRepository = depositRepository;
     }
 
-    public Page<Deposit>  getDeposits(String instrumentName, Pageable pageable) {return depositRepository.findAllByInstrumentName(instrumentName, pageable);}
+    public Page<Deposit>  getDeposits(String instrumentName, String user, Pageable pageable) {return depositRepository.findDepositsByInstrumentNameAndUser_Username(instrumentName, user, pageable);}
 
     public void deposit(Deposit deposit) {
         depositRepository.save(deposit);

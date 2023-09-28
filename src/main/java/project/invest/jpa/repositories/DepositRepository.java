@@ -7,5 +7,5 @@ import project.invest.jpa.entities.Deposit;
 
 
 public interface DepositRepository extends JpaRepository<Deposit, Long> {
-    Page<Deposit> findAllByInstrumentName(String name, Pageable pageable);
+    Page<Deposit> findDepositsByInstrumentNameAndUser_Username(String name, String user, Pageable pageable);
 }

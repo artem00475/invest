@@ -1,86 +1,78 @@
 package project.invest.controllers;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import project.invest.controllers.requests.ChangePercentRequest;
 import project.invest.controllers.requests.SummaryRequest;
 import project.invest.jpa.entities.InstrumentTypeEnum;
 import project.invest.jpa.entities.SummaryEntity;
 import project.invest.services.AccountService;
 import project.invest.services.SummaryService;
+import project.invest.services.UserService;
 
-import java.util.List;
 
 @Controller
 public class MainController {
 
-    @Autowired
     private final SummaryService summaryService;
 
-    @Autowired
     private final AccountService accountService;
 
-    public MainController(SummaryService summaryService, AccountService accountService) {
+    private final UserService userService;
+
+    @Autowired
+    public MainController(SummaryService summaryService, AccountService accountService, UserService userService) {
         this.summaryService = summaryService;
         this.accountService = accountService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
-    public String goHome(Model model) {
-        model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
-        model.addAttribute("total", summaryService.getTotal());
+    public String goHome(Model model, HttpServletResponse response) {
+        model.addAttribute("summary", summaryService.getAllByUserName(userService.getUserName()));
+        model.addAttribute("total", summaryService.getTotal(userService.getUserName()));
         model.addAttribute("summaryRequest", new SummaryRequest());
         model.addAttribute("ifUpdated", 1);
+        model.addAttribute("user", userService.getUserName());
+        Cookie cookie = new Cookie("instrument", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         return "home";
     }
 
     @PostMapping("/")
-    public String addSummary(Model model, @ModelAttribute SummaryRequest summaryRequest) {
+    public String addSummary(@ModelAttribute SummaryRequest summaryRequest) {
         if (summaryService.checkInstrument(summaryRequest.getInstrumentName())) {
             try {
                 SummaryEntity summaryEntity = new SummaryEntity();
                 summaryEntity.setInstrumentName(summaryRequest.getInstrumentName());
                 if (summaryRequest.getType().equals("Брокерский счёт")) summaryEntity.setInstrumentTypeEnum(InstrumentTypeEnum.brokerageAccount);
                 else summaryEntity.setInstrumentTypeEnum(InstrumentTypeEnum.crowdfunding);
-                summaryEntity.setUserName("Artem");
+                summaryEntity.setUser(userService.findByUserName(userService.getUserName()));
                 summaryService.addToSummery(summaryEntity);
                 System.out.println("Added");
             } catch (NumberFormatException e) {
                 System.out.println("Error");
             }
         } else System.out.println("Already exist");
-        model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
-        model.addAttribute("total", summaryService.getTotal());
-        model.addAttribute("ifUpdated", 1);
-        return "home";
-    }
-
-    @PostMapping("/cost")
-    public ResponseEntity<String> cost(@RequestBody List<String> costRequest) {
-        accountService.updateCost(costRequest);
-        return ResponseEntity.ok("Updated.");
+        return "redirect:/";
     }
 
     @PostMapping("/update")
-    public String updated(Model model) {
-        model.addAttribute("summary", summaryService.getAllByUserName("Artem"));
-        model.addAttribute("summaryRequest", new SummaryRequest());
-        model.addAttribute("total", summaryService.getTotal());
-        model.addAttribute("ifUpdated", 1);
-        return "home";
+    public String updated(@ModelAttribute ChangePercentRequest costReq) {
+        accountService.updateCost(costReq.getArray(), userService.getUserName());
+        return "redirect:/";
     }
 
     @GetMapping("/update")
     public String update(Model model) {
         model.addAttribute("ifUpdated", 0);
         model.addAttribute("tickers", accountService.getTickers());
+        model.addAttribute("costList", new ChangePercentRequest());
         return "home";
     }
-
-
-
-
-
 }

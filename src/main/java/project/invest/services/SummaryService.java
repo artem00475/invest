@@ -11,10 +11,10 @@ import java.util.List;
 
 @Service
 public class SummaryService {
-    @Autowired
+
     private final SummaryRepository summaryRepository;
 
-
+    @Autowired
     public SummaryService(SummaryRepository summaryRepository) {
         this.summaryRepository = summaryRepository;
     }
@@ -33,33 +33,33 @@ public class SummaryService {
         addToSummery(summaryEntity);
     }
 
-    public List<SummaryEntity> getAllByUserName(String user) {return summaryRepository.findAllByUserName(user);}
-    public List<SummaryEntity> getAllByUserNameAndType(String user, InstrumentTypeEnum instrumentTypeEnum) {return summaryRepository.findAllByUserNameAndInstrumentTypeEnum(user, instrumentTypeEnum);}
+    public List<SummaryEntity> getAllByUserName(String user) {return summaryRepository.findSummaryEntitiesByUser_Username(user);}
+    public List<SummaryEntity> getAllByUserNameAndType(String user, InstrumentTypeEnum instrumentTypeEnum) {return summaryRepository.findAllByUserUsernameAndInstrumentTypeEnum(user, instrumentTypeEnum);}
 
     public boolean checkInstrument(String instrumentName) {return summaryRepository.findByInstrumentName(instrumentName)==null;}
 
     public SummaryEntity getSummary(String instrumentName) {return summaryRepository.findByInstrumentName(instrumentName);}
 
-    public float getTotal() {
+    public float getTotal(String name) {
         float total = 0;
-        List<SummaryEntity> summaryEntities = summaryRepository.findAllByUserName("Artem");
+        List<SummaryEntity> summaryEntities = summaryRepository.findSummaryEntitiesByUser_Username(name);
         for (SummaryEntity summaryEntity : summaryEntities) {
             total += summaryEntity.getSum();
         }
         return total;
     }
 
-    public void updatePercentFromAll() {
-        float total = getTotal();
-        List<SummaryEntity> summaryEntities = summaryRepository.findAllByUserName("Artem");
+    public void updatePercentFromAll(String username) {
+        float total = getTotal(username);
+        List<SummaryEntity> summaryEntities = summaryRepository.findSummaryEntitiesByUser_Username(username);
         for (SummaryEntity summaryEntity : summaryEntities) {
             summaryEntity.setPercentFromAll(Float.parseFloat(new DecimalFormat("#.#").format(summaryEntity.getSum()/total*100).replace(',','.')));
         }
         summaryRepository.saveAll(summaryEntities);
     }
 
-    public void updateChangeFromInvested() {
-        List<SummaryEntity> summaryEntities = summaryRepository.findAllByUserName("Artem");
+    public void updateChangeFromInvested(String username) {
+        List<SummaryEntity> summaryEntities = summaryRepository.findSummaryEntitiesByUser_Username(username);
         for (SummaryEntity summaryEntity : summaryEntities) {
             summaryEntity.setChangeFromInvested(summaryEntity.getSum()- summaryEntity.getInvested());
         }

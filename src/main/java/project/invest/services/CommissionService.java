@@ -24,7 +24,7 @@ public class CommissionService {
         this.summaryRepository = summaryRepository;
     }
 
-    public Page<Commission> getCommissions(String instrumentName, Pageable pageable) {return commissionRepository.findAllByInstrumentName(instrumentName, pageable);}
+    public Page<Commission> getCommissions(String instrumentName, String user, Pageable pageable) {return commissionRepository.findCommissionsByInstrumentNameAndUser_Username(instrumentName, user, pageable);}
 
     public void addCommission(Commission commission) {
         commissionRepository.save(commission);

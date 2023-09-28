@@ -7,7 +7,7 @@ import project.invest.jpa.entities.SummaryEntity;
 import java.util.List;
 
 public interface SummaryRepository extends JpaRepository<SummaryEntity, Long> {
-    List<SummaryEntity> findAllByUserName(String user);
-    List<SummaryEntity> findAllByUserNameAndInstrumentTypeEnum(String user, InstrumentTypeEnum instrumentTypeEnum);
+    List<SummaryEntity> findSummaryEntitiesByUser_Username(String user);
+    List<SummaryEntity> findAllByUserUsernameAndInstrumentTypeEnum(String user, InstrumentTypeEnum instrumentTypeEnum);
     SummaryEntity findByInstrumentName(String name);
 }

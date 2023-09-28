@@ -19,7 +19,7 @@ public class SellsService {
         this.sellsRepository = sellsRepository;
     }
 
-    public Page<AccountSell> getSells(String instrumentName, Pageable pageable) {return sellsRepository.findAllByInstrumentName(instrumentName, pageable);}
+    public Page<AccountSell> getSells(String instrumentName, String user, Pageable pageable) {return sellsRepository.findAccountSellsByInstrumentNameAndUser_Username(instrumentName, user, pageable);}
 
     public void addSell(AccountSell accountSell) {sellsRepository.save(accountSell);}
 }

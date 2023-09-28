@@ -20,7 +20,7 @@ public class AccountBuyService {
         this.accountBuyRepository = accountBuyRepository;
     }
 
-    public Page<AccountBuy> getBuys(String instrumentName, Pageable pageable) {return accountBuyRepository.findAllByInstrumentName(instrumentName, pageable);}
+    public Page<AccountBuy> getBuys(String instrumentName, String user, Pageable pageable) {return accountBuyRepository.findAccountBuysByInstrumentNameAndUser_Username(instrumentName, user,pageable);}
 
     public Account addBuy(AccountBuy accountBuy, Account account) {
         accountBuyRepository.save(accountBuy);
@@ -30,6 +30,7 @@ public class AccountBuyService {
             account.setInstrumentName(accountBuy.getInstrumentName());
             account.setCount(accountBuy.getCount());
             account.setTicker(accountBuy.getTicker());
+            account.setUser(accountBuy.getUser());
         } else {
             account.setAverageCost((account.getAverageCost()*account.getCount()+accountBuy.getSum())/(account.getCount()+accountBuy.getCount()));
             account.setCount(account.getCount()+accountBuy.getCount());

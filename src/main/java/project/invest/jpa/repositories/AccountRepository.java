@@ -6,9 +6,9 @@ import project.invest.jpa.entities.Account;
 import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Account findByInstrumentNameAndTicker(String name, String ticker);
+    Account findByInstrumentNameAndTickerAndUser_Username(String name, String ticker, String userName);
     void removeById(long id);
-    List<Account> findAllByInstrumentName(String name);
+    List<Account> findAllByInstrumentNameAndUser_Username(String name, String userName);
     List<Account> findAll();
     List<Account> findAllByTicker(String ticker);
 }
