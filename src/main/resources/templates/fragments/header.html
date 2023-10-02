@@ -1,6 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${instrumentName}"></title>
+    <link rel="icon" type="image/png" th:href="${currentUri} == '/Accounting' ?'/images/icons/favicon.ico' : '../images/icons/favicon.ico'"/>
     <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'table.css' : '../table.css'">
     <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'header.css' : '../header.css'">
     <link rel="stylesheet" th:href="${currentUri} == '/Accounting' ? 'tableAndPie.css' : '../tableAndPie.css'">
