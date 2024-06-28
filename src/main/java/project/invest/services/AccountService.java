@@ -195,6 +195,11 @@ public class AccountService {
         return summaryService.getSummary(instrumentName).getBalance();
     }
 
+    public String getBalanceShare(String instrumentName) {
+        SummaryEntity summary = summaryService.getSummary(instrumentName);
+        return new DecimalFormat( "#.##" ).format(summary.getBalance()/ summary.getSum() * 100).replace(',', '.');
+    }
+
     public PaperTypeEnum getType(String ticker) {return paperRepository.findByTicker(ticker).getType();}
 
     public void changePercent(ArrayList<String> arrayList, String instrumentName, String username) {

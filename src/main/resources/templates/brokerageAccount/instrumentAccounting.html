@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/header}"></head>
 <div id="main1">
     <div id="controller">
-        <h2 th:text="${'Баланс: '+balance}"></h2>
+        <h2 th:text="${'Баланс: '+balance+' ('+balanceShare+'%)'}"></h2>
         <div style="display: inline-flex; justify-content: space-around; width: max-content">
             <button class="cstm-btn btn" id="change_btn">Изменить доли</button>
             <button class="cstm-btn btn" id="save_btn" style="display: none">Сохранить</button>
@@ -52,7 +52,12 @@
     </div>
     <script type="text/javascript" th:src="@{homePieChart.js}" src="static/homePieChart.js"></script>
     <script th:inline="javascript">
-        homePieChart1([[${accounts}]]);
+        let elements = [[${accounts}]];
+        elements.push({
+            name: "Баланс, руб",
+            currentShare: [[${balanceShare}]]
+        });
+        homePieChart1(elements);
         const accounts = [[${accounts}]];
     </script>
     <script type="text/javascript" th:src="@{change_percent.js}" src="static/change_percent.js"></script>

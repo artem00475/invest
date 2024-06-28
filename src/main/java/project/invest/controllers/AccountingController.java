@@ -48,6 +48,7 @@ public class AccountingController {
         model.addAttribute("instrumentName", instrumentName);
         model.addAttribute("accounts", accountService.getAccounts(instrumentName, userService.getUserName()));
         model.addAttribute("balance", accountService.getBalance(instrumentName));
+        model.addAttribute("balanceShare", accountService.getBalanceShare(instrumentName));
         model.addAttribute("changePercentRequest", new ChangePercentRequest());
         return "brokerageAccount/instrumentAccounting";
     }
