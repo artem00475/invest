@@ -12,6 +12,7 @@ import project.invest.jpa.repositories.PaperRepository;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Service
@@ -130,6 +131,7 @@ public class AccountService {
         List<Account> accounts = accountRepository.findAllByInstrumentNameAndUser_Username(instrumentName, username);
         float sum = 0;
         for (Account account : accounts) {
+            if (account.getCount() == 0) continue;
             account.setChange(account.getCount()*account.getCurrentCost()-account.getCount()*account.getAverageCost());
             account.setChangeInPercents(Float.parseFloat(new DecimalFormat("#.###").format(account.getChange()/(account.getAverageCost()*account.getCount())*100).replace(',','.')));
             sum += account.getCount()*account.getCurrentCost();
@@ -172,9 +174,11 @@ public class AccountService {
         costRequest.forEach(el -> {
             String[] a = el.split("###");
             Paper paper = paperRepository.findByTicker(a[0]);
-            paper.setCost(Float.parseFloat(a[1]));
-            paper.setName(a[2]);
-            paperRepository.save(paper);
+            if (!Objects.equals(a[1], "null")) {
+                paper.setCost(Float.parseFloat(a[1]));
+                paper.setName(a[2]);
+                paperRepository.save(paper);
+            }
         });
         List<Account> accounts = accountRepository.findAll();
         accounts.forEach(el -> {
